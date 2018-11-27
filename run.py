@@ -1,13 +1,7 @@
-from flask import Flask
-from flask_restful import Resource, Api
 
-app=Flask(__name__)
-api=Api(app)
+from app import create_app
 
-class Student(Resource):
-    def get(self, name):
-        return {'student': name}
+app = create_app()
 
-api.add_resource(Student, '/student/<string:name>')
-
-app.run(port=5000)
+if __name__ == '__main__':
+    app.run(debug=True)
