@@ -25,8 +25,8 @@ class MyIncidents(Resource, IncidentsModel):
             "Red flag record created": resp
         }), 201)
 
-    # def get(self):
-    #     resp = self.db.get_incidents()
-    #     return make_response(jsonify({
-    #         "my list of records": resp
-    #     }), 200)
+    def get(self):
+        resp = self.db.get_incidents()
+        return make_response(jsonify({
+            "my list of records": resp
+        }), 200)
