@@ -53,4 +53,18 @@ class MyRecords(Resource, IncidentsModel):
                     "data": i
                 }), 200)
 
-   
+    
+
+    def patch(self, id):
+        topatch = self.db.get_one(id)
+        if not topatch:
+            return {'message': 'not found'}, 404
+        else:
+            topatch.update(request.get_json())
+        return make_response(jsonify({
+                'status': 200,
+                'data': [{
+                    'id': 200,
+                    "message": "Updated red-flag record's location"
+                }]
+            }), 201)
