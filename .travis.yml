@@ -10,6 +10,9 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls --quiet
 
+scripts:
+-pytest --with-coverage app/tests/v1
+
 before_script:
   - createdb test_db
 

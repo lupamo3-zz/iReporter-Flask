@@ -21,13 +21,22 @@ class MyIncidents(Resource, IncidentsModel):
         resp = self.db.save(createdOn, createdBy, location, status,
                             comment)
 
-        return make_response(jsonify({
-            "status": 201,
-            "data": [{
-                "id": 1,
-                "message": "Created redflag record"
-            }]
-        }), 201)
+        if resp:
+
+            return make_response(jsonify({
+                "status": 201,
+                "data": [{
+                    "id": 1,
+                    "message": "Created redflag record"
+                }]
+            }), 201)
+
+        else:
+
+            return make_response(jsonify({
+                "status": 400,
+                "data": "Creation not succesul"
+            }))
 
     def get(self):
         resp = self.db.get_incidents()
@@ -47,11 +56,21 @@ class MyRecords(Resource, IncidentsModel):
         incidents = self.db.get_incidents()
         for i in incidents:
             if i['id'] == id:
-                print(id)
+
                 return make_response(jsonify({
                     "status": 200,
                     "data": i
-                }), 200)
+                }),
+                    200)
+            else:
+                return make_response(
+                    jsonify(
+                        {
+                            "status": 404,
+                            "error": "Redflag Not found"
+                        }
+                    )
+                )
 
     def delete(self, id):
         incidel = self.db.get_incidents()
@@ -77,9 +96,9 @@ class MyRecords(Resource, IncidentsModel):
         else:
             topatch.update(request.get_json())
         return make_response(jsonify({
-                'status': 200,
-                'data': [{
-                    'id': 200,
-                    "message": "Updated red-flag record's location"
-                }]
-            }), 201)
+            'status': 200,
+            'data': [{
+                'id': 200,
+                "message": "Updated red-flag record's location"
+            }]
+        }), 201)
