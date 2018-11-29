@@ -11,14 +11,14 @@ class MyIncidents(Resource, IncidentsModel):
         self.db = IncidentsModel()
 
     def post(self):
-        data = request.get_json()
-        createdBy = data['createdBy']
-        createdOn = data['createdOn']
-        location = data['location']
-        status = data['status']
-        comment = data['comment']
+        data = request.get_json(force=True)
+        createdOn = data['createdOn'],
+        createdBy = data['createdBy'],
+        location = data['location'],
+        status = data['status'],
+        comment = data['comment'],
 
-        resp = self.db.save(createdBy, createdOn, location, status,
+        resp = self.db.save(createdOn, createdBy, location, status,
                             comment)
 
         return make_response(jsonify({
