@@ -31,10 +31,17 @@ class TestRedflags(unittest.TestCase):
         response = self.client.post('/api/v1/incidents', data=json.dumps(self.data), content_type="application/json")
         result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
-        # self.assertIn('comment', str(response.data))
 
     def test_get_one_record(self):
         """ Test if API is able to get a single ID record"""
+        rv = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        self.assertEqual(rv.status_code, 201)
+        res = self.client.get('/api/v1/incidents/1')
+        self.assertEqual(res.status_code, 200)
 
     def test_records_deletion(self):
         """Test if API can delete existing records """
@@ -46,10 +53,18 @@ class TestRedflags(unittest.TestCase):
         self.assertEqual(rv.status_code, 201)
         res = self.client.delete('/api/v1/incidents/1')
         self.assertEqual(res.status_code, 200)
-        # Test to see if it exists, should return a 404
+        """Test to see if it exists, should return a 404"""
 
-        # result = self.client.get('/api/v1/incidents')
-        # self.assertEqual(result.status_code, 404)
+        result = self.client.get('/api/v1/incidents')
+        self.assertEqual(result.status_code, 404)
+
+    def test_patch(self):
+        """Test if the Patch end point is working """
+        rv = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
 
     def tearDown(self):
         """Teardown all initialized variables"""
