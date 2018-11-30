@@ -90,3 +90,6 @@ ENV/
 .ropeproject
 .coverage
 instance/
+
+htmlcov/
+.pytest_cache

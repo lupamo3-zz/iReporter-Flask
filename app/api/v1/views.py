@@ -35,15 +35,23 @@ class MyIncidents(Resource, IncidentsModel):
 
             return make_response(jsonify({
                 "status": 400,
-                "data": "Creation not succesul"
+                "data": "Red-flag Creation not succesful"
             }))
 
     def get(self):
         resp = self.db.get_incidents()
-        return make_response(jsonify({
-            "status": 200,
-            "data": resp
-        }), 200)
+        if resp:
+
+            return make_response(jsonify({
+                "status": 200,
+                "data": resp
+            }), 200)
+
+        else:
+            return make_response(jsonify({
+                "status": 404,
+                "data": "Red-flag not found"
+            }))
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -94,7 +102,7 @@ class MyRecords(Resource, IncidentsModel):
         if not topatch:
             return {'message': 'not found'}, 404
         else:
-            topatch.update(request.get_json())
+            topatch.update(request.get_json(force=True))
         return make_response(jsonify({
             'status': 200,
             'data': [{

@@ -12,10 +12,11 @@ install:
 
 scripts:
 -pytest --with-coverage app/tests/v1
+-nosetests --with-coverage --cover-package=app app/tests
 
 before_script:
   - createdb test_db
 
-# command to run tests
-script: coverage run --source=app ./manage.py test
-after_success: coveralls
+after_success: 
+- coveralls
+- codecov --token=
