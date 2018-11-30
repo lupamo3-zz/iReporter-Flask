@@ -8,9 +8,4 @@ install:
   - pip install coveralls codecov
 
 scripts:
--pytest --with-coverage app/tests/v1
--nosetests --with-coverage --cover-package=app app/tests/v1
-
-# after_success: 
-# - coveralls
-# - codecov --token=
+-nosetest2
