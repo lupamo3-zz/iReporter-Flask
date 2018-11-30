@@ -13,7 +13,7 @@ class IncidentsModel():
     def __init__(self):
         self.db = incidents_list
 
-    """ save our data"""
+    """ save our data and appends it to a list """
     def save(self, createdOn, createdBy, location, status, comment):
         incidentdata = {
             "id": self.userid(),

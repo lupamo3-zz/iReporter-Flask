@@ -11,6 +11,7 @@ class MyIncidents(Resource, IncidentsModel):
         self.db = IncidentsModel()
 
     def post(self):
+        """ Create a redflag """
         data = request.get_json(force=True)
         createdOn = data['createdOn'],
         createdBy = data['createdBy'],
@@ -35,22 +36,24 @@ class MyIncidents(Resource, IncidentsModel):
 
             return make_response(jsonify({
                 "status": 400,
-                "data": "Red-flag Creation not succesful"
+                "error": "Red-flag Creation not succesful"
             }))
 
     def get(self):
-        resp = self.db.get_incidents()
-        if resp:
+        """ Get all red flag records """
+        fetch_all = self.db.get_incidents()
+
+        if fetch_all:
 
             return make_response(jsonify({
                 "status": 200,
-                "data": resp
+                "data": fetch_all
             }), 200)
 
         else:
             return make_response(jsonify({
                 "status": 404,
-                "data": "Red-flag not found"
+                "error": "Red-flag not found"
             }))
 
 
@@ -61,6 +64,7 @@ class MyRecords(Resource, IncidentsModel):
         self.db = IncidentsModel()
 
     def get(self, id):
+        """ Get a specific red-flag record """
         incidents = self.db.get_incidents()
         for i in incidents:
             if i['id'] == id:
@@ -81,6 +85,7 @@ class MyRecords(Resource, IncidentsModel):
                 )
 
     def delete(self, id):
+        """ Allows you to delete a red-flag record """
         incidel = self.db.get_incidents()
         deleting = self.db.get_one(id)
 
@@ -98,11 +103,14 @@ class MyRecords(Resource, IncidentsModel):
         }))
 
     def patch(self, id):
+        """ Allows you to make changes to an exisiting red-flag """
         topatch = self.db.get_one(id)
+
         if not topatch:
             return {'message': 'not found'}, 404
         else:
-            topatch.update(request.get_json(force=True))
+            topatch.update(request.get_json())
+
         return make_response(jsonify({
             'status': 200,
             'data': [{
