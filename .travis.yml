@@ -11,6 +11,6 @@ scripts:
 -pytest --with-coverage app/tests/v1
 -nosetests --with-coverage --cover-package=app app/tests/v1
 
-after_success: 
-- coveralls
-- codecov --token=
+# after_success: 
+# - coveralls
+# - codecov --token=

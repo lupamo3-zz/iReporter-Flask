@@ -3,7 +3,7 @@ import unittest
 import json
 import pytest
 
-from app import create_app
+from ... import create_app
 
 
 class TestRedflags(unittest.TestCase):
@@ -20,6 +20,7 @@ class TestRedflags(unittest.TestCase):
             "location": "Mount Sinai",
             "status": "There is a bush on fire",
             "comment": "How hot can it be?",
+            "id": 1
         }
 
     def test_get_all_records(self):
@@ -44,7 +45,7 @@ class TestRedflags(unittest.TestCase):
     def test_get_one_record(self):
         """ Test if API is able to get a single ID record"""
         rv = self.client.post(
-            '/api/v1/incidents/',
+            '/api/v1/incidents/1',
             data=json.dumps(self.data),
             content_type="application/json"
         )
@@ -53,17 +54,6 @@ class TestRedflags(unittest.TestCase):
         result_in_json = json.loads(rv.data.decode('utf-8').replace("'", "\""))
         res = self.client.get(
             '/api/v1/incidents/{}'.format(result_in_json['id']))
-        self.assertEqual(res.status_code, 200)
-
-    def test_records_deletion(self):
-        """Test if API can delete existing records """
-        rv = self.client.post(
-            '/api/v1/incidents',
-            data=json.dumps(self.data),
-            content_type="application/json"
-        )
-        self.assertEqual(rv.status_code, 201)
-        res = self.client.delete('/api/v1/incidents/1')
         self.assertEqual(res.status_code, 200)
 
     def test_patch(self):
@@ -92,6 +82,17 @@ class TestRedflags(unittest.TestCase):
         self.assertEqual(rv.status_code, 200)
         results = self.client.get('/api/v1/incidents/1')
         self.assertIn('How hot can i be?', str(results.data))
+
+    def test_records_deletion(self):
+        """Test if API can delete existing records """
+        rv = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        self.assertEqual(rv.status_code, 201)
+        res = self.client.delete('/api/v1/incidents/1')
+        self.assertEqual(res.status_code, 200)
 
     def tearDown(self):
         """Teardown all initialized variables"""
