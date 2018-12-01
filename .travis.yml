@@ -9,4 +9,5 @@ install:
 
 scripts:
 -nose2 -v --with-coverage
+-pytest 
 
