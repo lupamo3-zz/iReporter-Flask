@@ -4,36 +4,7 @@ from datetime import datetime
 def get_timestamp():
     return datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
 
-users_list = []
 incidents_list = []
-
-
-# class UsersModel():
-#     """ Docstring for usersmodel"""
-
-#     def __init__(self):
-#         self.db = users_list
-
-#     def save(self, firstname, lastname, othernames, email, phoneNumber,
-#              username, registered, isAdmin):
-#         data = {
-#             "id": len(self.db)+1,
-#             "firstname": firstname,
-#             "lastname": lastname,
-#             "othernames": othernames,
-#             "email": email,
-#             "phoneNumber": phoneNumber,
-#             "username": username,
-#             "registered": get_timestamp(),
-#             "isAdmin": True
-#         }
-
-#         self.db.append(data)
-
-#         return self.db
-
-#     def get_users(self):
-#         return self.db
 
 
 class IncidentsModel():
@@ -42,9 +13,10 @@ class IncidentsModel():
     def __init__(self):
         self.db = incidents_list
 
+    """ save our data"""
     def save(self, createdOn, createdBy, location, status, comment):
         incidentdata = {
-            "id": len(self.db)+1,
+            "id": self.userid(),
             "createdOn": get_timestamp(),
             "createdBy": createdBy,
             "location": location,
@@ -53,8 +25,22 @@ class IncidentsModel():
         }
 
         self.db.append(incidentdata)
-
         return self.db
 
+    """get all the incidents """
     def get_incidents(self):
         return self.db
+
+    """ get one incident data"""
+    def get_one(self, id):
+        result = None
+
+        for instance in self.db:
+            if instance['id'] == id:
+                result = instance
+        return result
+
+    def userid(self):
+        if len(self.db):
+            return self.db[-1]["id"] + 1
+        return 1
