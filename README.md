@@ -51,6 +51,6 @@ pip install -r requirements.txt
 ##### Run the tests using Pytests or nosetests.
 
 ## Test The API end-points
-/api/v1/incident/ -GET POST
+/api/v1/incident/ -GET POST 
 /api/v1/incident/<int:id> -GET(with_id), PATCH, DELETE
 
