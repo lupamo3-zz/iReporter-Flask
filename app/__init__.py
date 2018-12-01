@@ -3,12 +3,10 @@ from flask import Flask
 from flask_restful import Api, Resource
 
 # local  imports
-from .api.v1.views import MyIncidents, MyRecords
+from .api.v1 import version_1 as v1
 
 
 def create_app():
     app = Flask(__name__)
-    api = Api(app)
-    api.add_resource(MyIncidents, '/incidents')
-    api.add_resource(MyRecords, '/incidents/<int:id>')
+    app.register_blueprint(v1)
     return app

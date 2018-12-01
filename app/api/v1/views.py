@@ -11,30 +11,47 @@ class MyIncidents(Resource, IncidentsModel):
         self.db = IncidentsModel()
 
     def post(self):
-        data = request.get_json()
-        createdBy = data['createdBy']
-        createdOn = data['createdOn']
-        location = data['location']
-        status = data['status']
-        comment = data['comment']
+        data = request.get_json(force=True)
+        createdOn = data['createdOn'],
+        createdBy = data['createdBy'],
+        location = data['location'],
+        status = data['status'],
+        comment = data['comment'],
 
-        resp = self.db.save(createdBy, createdOn, location, status,
+        resp = self.db.save(createdOn, createdBy, location, status,
                             comment)
 
-        return make_response(jsonify({
-            "status": 201,
-            "data": [{
-                "id": 1,
-                "message": "Created redflag record"
-            }]
-        }), 201)
+        if resp:
+
+            return make_response(jsonify({
+                "status": 201,
+                "data": [{
+                    "id": 1,
+                    "message": "Created redflag record"
+                }]
+            }), 201)
+
+        else:
+
+            return make_response(jsonify({
+                "status": 400,
+                "data": "Red-flag Creation not succesful"
+            }))
 
     def get(self):
         resp = self.db.get_incidents()
-        return make_response(jsonify({
-            "status": 200,
-            "data": resp
-        }), 200)
+        if resp:
+
+            return make_response(jsonify({
+                "status": 200,
+                "data": resp
+            }), 200)
+
+        else:
+            return make_response(jsonify({
+                "status": 404,
+                "data": "Red-flag not found"
+            }))
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -47,11 +64,21 @@ class MyRecords(Resource, IncidentsModel):
         incidents = self.db.get_incidents()
         for i in incidents:
             if i['id'] == id:
-                print(id)
+
                 return make_response(jsonify({
                     "status": 200,
                     "data": i
-                }), 200)
+                }),
+                    200)
+            else:
+                return make_response(
+                    jsonify(
+                        {
+                            "status": 404,
+                            "error": "Redflag Not found"
+                        }
+                    )
+                )
 
     def delete(self, id):
         incidel = self.db.get_incidents()
@@ -75,11 +102,11 @@ class MyRecords(Resource, IncidentsModel):
         if not topatch:
             return {'message': 'not found'}, 404
         else:
-            topatch.update(request.get_json())
+            topatch.update(request.get_json(force=True))
         return make_response(jsonify({
-                'status': 200,
-                'data': [{
-                    'id': 200,
-                    "message": "Updated red-flag record's location"
-                }]
-            }), 201)
+            'status': 200,
+            'data': [{
+                'id': 200,
+                "message": "Updated red-flag record's location"
+            }]
+        }), 201)
