@@ -89,7 +89,6 @@ ENV/
 # Rope project settings
 .ropeproject
 .coverage
-instance/
 
 htmlcov/
 .pytest_cache
