@@ -53,7 +53,22 @@ class MyRecords(Resource, IncidentsModel):
                     "data": i
                 }), 200)
 
-    
+    def delete(self, id):
+        incidel = self.db.get_incidents()
+        deleting = self.db.get_one(id)
+
+        if not deleting:
+            return {'message': 'not found'}, 404
+        else:
+            incidel.remove(deleting)
+
+        return make_response(jsonify({
+            'status': 200,
+            "data": [{
+                "id": 1,
+                "message": "red-flag record has been deleted"
+            }]
+        }))
 
     def patch(self, id):
         topatch = self.db.get_one(id)
