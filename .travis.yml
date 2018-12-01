@@ -8,4 +8,5 @@ install:
   - pip install coveralls codecov
 
 scripts:
--nosetest2
+-nose2 -v --with-coverage
+
