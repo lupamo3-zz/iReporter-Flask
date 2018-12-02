@@ -39,10 +39,38 @@ class TestRedflags(unittest.TestCase):
             data=json.dumps(self.data),
             content_type="application/json"
         )
-        result = json.loads(response.data)
         self.assertEqual(response.status_code, 201)
+        self.assertIn('Created redflag record', str(response.data))
 
-    
+    def test_get_one_record(self):
+        """ Test if API is able to get a single ID record"""
+        self.client.post(
+            '/api/v1/incidents/1',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        response = self.client.get("/api/v1/incidents/1")
+        self.assertIn("data", str(response.data))
+        self.assertEqual(response.status_code, 200)
+
+    def test_patch(self):
+        """Test if the Patch end point is working """
+
+        self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        patch_record = {
+            'location': 'Andela Lagos'
+        }
+        response = self.client.patch(
+            "/api/v1/incidents/1",
+            data=json.dumps(patch_record),
+            headers={"content-type": "application/json"})
+        self.assertIn("Updated red-flag record location",
+                      str(response.data))
+        self.assertEqual(response.status_code, 201)
 
     def test_records_deletion(self):
         """Test if API can delete existing records """

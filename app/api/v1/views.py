@@ -115,6 +115,6 @@ class MyRecords(Resource, IncidentsModel):
             'status': 200,
             'data': [{
                 'id': 200,
-                "message": "Updated red-flag record's location"
+                "message": "Updated red-flag record location"
             }]
         }), 201)

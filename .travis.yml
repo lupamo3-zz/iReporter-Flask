@@ -1,12 +1,15 @@
 language: python
 python:
-  - 3.6
+  - "3.6"
 
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install coveralls codecov
+  - pip install coveralls
 
-scripts:
--nose2 -v --with-coverage
+script:
+  - nosetests --with-coverage --cover-package=app
+  - py.test -v --cov-report term-missing --cov app
 
+after_success: 
+  - coveralls
