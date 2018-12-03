@@ -56,3 +56,13 @@ pip install -r requirements.txt
 /api/v1/incident/ -GET POST 
 /api/v1/incident/<int:id> -GET(with_id), PATCH, DELETE
 
+
+| URL           | MESSAGE       | METHOD  |
+| ------------- |:-------------:| -------:|
+| col 3 is      | right-aligned | $1600   |
+| col 2 is      | centered      |   $12   |
+| zebra stripes | are neat      |    $1   |
+| col 3 is      | right-aligned | $1600   |
+| col 2 is      | centered      |   $12   |
+| zebra stripes | are neat      |    $1   |
+
