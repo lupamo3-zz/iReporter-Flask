@@ -48,21 +48,23 @@ $ Pip install auto-env
 ```
 pip install -r requirements.txt
 ```
+### *Run the tests :*
+```
+  - nosetests --with-coverage --cover-package=app
+  - py.test -v --cov-report term-missing --cov app
+  ```
 
 ##### Test the application on Postman
-##### Run the tests using Pytests or nosetests.
-
 ## Test The API end-points
-/api/v1/incident/ -GET POST 
-/api/v1/incident/<int:id> -GET(with_id), PATCH, DELETE
+###### Input this url[https://dashboard.heroku.com/apps/ireporterflask-api-heroku] on your postman to thest the URLs
 
+or use:
 
-| URL           | MESSAGE       | METHOD  |
-| ------------- |:-------------:| -------:|
-| col 3 is      | right-aligned | $1600   |
-| col 2 is      | centered      |   $12   |
-| zebra stripes | are neat      |    $1   |
-| col 3 is      | right-aligned | $1600   |
-| col 2 is      | centered      |   $12   |
-| zebra stripes | are neat      |    $1   |
+| URL                       | METHOD        | MESSAGE                                |
+| --------------------------|:-------------:| --------------------------------------:|
+|api/v1/incident/           | GET           | Get all red-flag incidences            |
+|api/v1/incident/           | POST          | Create a new red-flag record           |
+|api/v1/incident/<int:id>   | GET<int:id>   | Get red-flags by id                    |
+|api/v1/incident/<int:id>   | PATCH<int:id> | Make changes to an item in the red-flag|
+|api/v1/incident/<int:id>   | DELETE<int:id>| Delete a specific red-flag.            |
 
