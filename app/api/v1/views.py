@@ -16,11 +16,9 @@ class MyIncidents(Resource, IncidentsModel):
         data = request.get_json(force=True)
         createdBy = data['createdBy']
         location = data['location']
-        status = data['status']
         comment = data['comment']
 
-        resp = self.db.save(createdBy, location, status,
-                            comment)
+        resp = self.db.save(createdBy, location, comment)
 
         if resp == "missing data":
 
@@ -33,6 +31,7 @@ class MyIncidents(Resource, IncidentsModel):
             "status": 201,
             "data": [{
                 "id": 1,
+                "record": resp,
                 "message": "Created redflag record"
             }]
         }), 201)
@@ -77,7 +76,7 @@ class MyRecords(Resource, IncidentsModel):
             jsonify(
                 {
                     "status": 404,
-                    "error": "Redflag Not found"
+                    "error": "Redflag with that id not found"
                 }
             )
         )
@@ -88,7 +87,7 @@ class MyRecords(Resource, IncidentsModel):
         deleting = self.db.get_one(id)
 
         if not deleting:
-            return {'message': 'Redflag has been deleted and not found'}, 404
+            return {'message': 'Redflag not found'}, 404
         else:
             incidel.remove(deleting)
 
@@ -105,7 +104,7 @@ class MyRecords(Resource, IncidentsModel):
         topatch = self.db.get_one(id)
 
         if not topatch:
-            return {'message': 'Redflag to be edited not found'}, 404
+            return {'message': 'Redflag to be edited not found'}, 200
         else:
             topatch.update(request.get_json())
 
@@ -113,6 +112,7 @@ class MyRecords(Resource, IncidentsModel):
             'status': 200,
             'data': [{
                 'id': 200,
+                "data": topatch,
                 "message": "Updated red-flag record location"
             }]
         }), 201)
