@@ -30,7 +30,6 @@ class MyIncidents(Resource, IncidentsModel):
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "id": 1,
                 "record": resp,
                 "message": "Created redflag record"
             }]
@@ -87,14 +86,14 @@ class MyRecords(Resource, IncidentsModel):
         deleting = self.db.get_one(id)
 
         if not deleting:
-            return {'message': 'Redflag not found'}, 404
+            return {'id': id, 'message': 'Redflag not found'}, 404
         else:
             incidel.remove(deleting)
 
         return make_response(jsonify({
             'status': 200,
             "data": [{
-                "id": 1,
+                "id": id,
                 "message": "red-flag record has been deleted"
             }]
         }))
@@ -111,7 +110,7 @@ class MyRecords(Resource, IncidentsModel):
         return make_response(jsonify({
             'status': 200,
             'data': [{
-                'id': 200,
+                'id': id,
                 "data": topatch,
                 "message": "Updated red-flag record location"
             }]
