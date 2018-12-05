@@ -1,11 +1,12 @@
 from flask import jsonify, make_response, request
 from flask_restful import Resource, Api, abort, request
 
-from .models import IncidentsModel
+from .models import IncidentsModel, incidents_list
 
 
 class MyIncidents(Resource, IncidentsModel):
-    """ Docstring for MyIncidents"""
+    """ Docstring for MyIncidents class, Myincidents class has methods for 
+    users to Create redflags(POST) and to get all red flag records(GET)"""
 
     def __init__(self):
         self.db = IncidentsModel()
@@ -13,31 +14,26 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-        createdOn = data['createdOn'],
-        createdBy = data['createdBy'],
-        location = data['location'],
-        status = data['status'],
-        comment = data['comment'],
+        createdBy = data['createdBy']
+        location = data['location']
+        comment = data['comment']
 
-        resp = self.db.save(createdOn, createdBy, location, status,
-                            comment)
+        resp = self.db.save(createdBy, location, comment)
 
-        if resp:
-
-            return make_response(jsonify({
-                "status": 201,
-                "data": [{
-                    "id": 1,
-                    "message": "Created redflag record"
-                }]
-            }), 201)
-
-        else:
+        if resp == "missing data":
 
             return make_response(jsonify({
                 "status": 400,
                 "error": "Red-flag Creation not succesful"
             }))
+
+        return make_response(jsonify({
+            "status": 201,
+            "data": [{
+                "record": resp,
+                "message": "Created redflag record"
+            }]
+        }), 201)
 
     def get(self):
         """ Get all red flag records """
@@ -50,15 +46,16 @@ class MyIncidents(Resource, IncidentsModel):
                 "data": fetch_all
             }), 200)
 
-        else:
-            return make_response(jsonify({
-                "status": 404,
-                "error": "Red-flag not found"
-            }))
+        return make_response(jsonify({
+            "status": 404,
+            "error": "Red-flag not found"
+        }))
 
 
 class MyRecords(Resource, IncidentsModel):
-    """ Docstring for MyRecords"""
+    """ Docstring for MyRecords class, this class has methods that allows
+    users to get specific records(GET by id), make changes to a
+    record(PATCH) and to delete sepecific records(DELETE by id)"""
 
     def __init__(self):
         self.db = IncidentsModel()
@@ -72,17 +69,16 @@ class MyRecords(Resource, IncidentsModel):
                 return make_response(jsonify({
                     "status": 200,
                     "data": i
-                }),
-                    200)
-            else:
-                return make_response(
-                    jsonify(
-                        {
-                            "status": 404,
-                            "error": "Redflag Not found"
-                        }
-                    )
-                )
+                }), 200)
+
+        return make_response(
+            jsonify(
+                {
+                    "status": 404,
+                    "error": "Redflag with that id not found"
+                }
+            )
+        )
 
     def delete(self, id):
         """ Allows you to delete a red-flag record """
@@ -90,14 +86,14 @@ class MyRecords(Resource, IncidentsModel):
         deleting = self.db.get_one(id)
 
         if not deleting:
-            return {'message': 'not found'}, 404
+            return {'id': id, 'message': 'Redflag not found'}, 404
         else:
             incidel.remove(deleting)
 
         return make_response(jsonify({
             'status': 200,
             "data": [{
-                "id": 1,
+                "id": id,
                 "message": "red-flag record has been deleted"
             }]
         }))
@@ -107,14 +103,15 @@ class MyRecords(Resource, IncidentsModel):
         topatch = self.db.get_one(id)
 
         if not topatch:
-            return {'message': 'not found'}, 404
+            return {'message': 'Redflag to be edited not found'}, 200
         else:
             topatch.update(request.get_json())
 
         return make_response(jsonify({
             'status': 200,
             'data': [{
-                'id': 200,
+                'id': id,
+                "data": topatch,
                 "message": "Updated red-flag record location"
             }]
         }), 201)
