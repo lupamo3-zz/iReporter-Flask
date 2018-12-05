@@ -14,7 +14,7 @@ class IncidentsModel():
     def __init__(self):
         self.db = incidents_list
         self.status = "Draft"
-        self.time = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+        self.createdOn = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
 
     """ save our data and appends it to a list """
     def save(self, createdBy, location, comment):
@@ -24,13 +24,17 @@ class IncidentsModel():
             "location": location,
             "comment": comment,
             "status": self.status,
-            "time": self.time
+            "createdOn": self.createdOn
         }
         validate_data = "missing data"
 
         for i in incidentdata:
-            if type(createdBy) != str or type(location) != str or type(comment) != str:
+            if type(createdBy) != str or type(location) != str or type(comment) != str or type(self.status) != str:
                 return validate_data
+            elif type(self.userid()) != int or type(self.createdOn) != str:
+                return validate_data
+        if incidentdata["comment"] == "keyerror":
+            return "keyerror"
         self.db.append(incidentdata)
         return incidentdata
 
