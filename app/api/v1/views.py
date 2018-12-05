@@ -14,23 +14,41 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
+        if not data:
+            return make_response(jsonify({
+                "status": 200,
+                "message": "No data input"
+            }), 404)
+        elif not data['location'] or not data["createdBy"] or not data["comment"]:
+            return make_response(jsonify({
+                "status": 404,
+                "data": [{"message": "Ensure you have\
+ filled all fields. i.e {} " .format(data)}]
+            }), 404)
+
         createdBy = data['createdBy']
         location = data['location']
         comment = data['comment']
 
         resp = self.db.save(createdBy, location, comment)
 
+        if resp == "keyerror":
+            return make_response(jsonify({
+                "status": 400,
+                "error": "Location key One field is missing"
+            }), 400)
+
         if resp == "missing data":
 
             return make_response(jsonify({
                 "status": 400,
-                "error": "Red-flag Creation not succesful"
+                "error": "Kindly input the correct data"
             }))
 
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "record": resp,
+                "incident_created": resp,
                 "message": "Created redflag record"
             }]
         }), 201)
