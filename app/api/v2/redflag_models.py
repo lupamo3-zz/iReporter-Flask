@@ -85,7 +85,18 @@ class IncidentsModel():
                 result = instance
         return result
 
-    # def userid(self):
-    #     if (self.db):
-    #         return self.db[-1]["id"] + 1  # self.db is not iterable
-    #     return 1
+    def delete_redflag(self, id):
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
+        dbconn.commit()
+
+    def edit_redflags(self, id):
+        sql = """ UPDATE incidents
+                SET createdOn = %s, images = %s, videos = %s, comment = %s,
+                 location = %s, status = %s
+                WHERE incidents_id = /s"""
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute(sql, (createdOn))
+        dbconn.commit()
