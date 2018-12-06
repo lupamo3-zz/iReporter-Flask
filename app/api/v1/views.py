@@ -5,8 +5,9 @@ from .models import IncidentsModel, incidents_list
 
 
 class MyIncidents(Resource, IncidentsModel):
-    """ Docstring for MyIncidents class, Myincidents class has methods for 
-    users to Create redflags(POST) and to get all red flag records(GET)"""
+    """ Docstring for MyIncidents class, Myincidents class has 
+    methods for users to Create redflags(POST) and to get all red
+     flag records(GET)"""
 
     def __init__(self):
         self.db = IncidentsModel()
@@ -14,6 +15,7 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
+        keys = data.keys()
         if not data:
             return make_response(jsonify({
                 "status": 200,
@@ -31,12 +33,6 @@ class MyIncidents(Resource, IncidentsModel):
         comment = data['comment']
 
         resp = self.db.save(createdBy, location, comment)
-
-        if resp == "keyerror":
-            return make_response(jsonify({
-                "status": 400,
-                "error": "Location key One field is missing"
-            }), 400)
 
         if resp == "missing data":
 
@@ -66,7 +62,7 @@ class MyIncidents(Resource, IncidentsModel):
 
         return make_response(jsonify({
             "status": 404,
-            "error": "Red-flag not found"
+            "error": "No Red-flag record found"
         }))
 
 
