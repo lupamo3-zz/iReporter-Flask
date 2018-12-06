@@ -12,12 +12,13 @@ class Config(object):
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
+    db_url = os.getenv('DATABASE_URL')
 
 
 class TestingConfig(Config):
     """Configurations for Testing, with a separate test database."""
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/test_db'
+    testdb_url = os.getenv('TESTDATABASE_URL')
     DEBUG = True
 
 
