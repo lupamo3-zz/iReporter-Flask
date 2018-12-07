@@ -6,7 +6,7 @@ from .user_models import UsersModel
 
 class MyUsers(Resource, UsersModel):
     """ Docstring for MyUsers class, MyUsers class has methods
-      to Create Users(POST) and to get all red flag records(GET)"""
+      to Create Users(POST) and to get all users(GET)"""
 
     def __init__(self):
         self.db = UsersModel()
