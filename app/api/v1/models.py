@@ -1,3 +1,5 @@
+import re
+
 from datetime import datetime
 from flask import request
 
@@ -35,10 +37,25 @@ class IncidentsModel():
                 return validate_data
         if incidentdata["comment"] == "keyerror":
             return "keyerror"
+
+        whitespaces = "white space"
+        for k in incidentdata:
+            if createdBy.isspace() or location.isspace() or comment.isspace():
+                return whitespaces
         self.db.append(incidentdata)
         return incidentdata
 
+    def check_location(self, location):
+        items = {
+            "location": location
+        }
+        regex = re.compile(r'\A[a-zA-Z0-9*]+\Z')
+
+        if not regex.match(location):
+            return items
+
     """get all the incidents """
+
     def get_incidents(self):
         return self.db
 

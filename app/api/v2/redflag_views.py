@@ -87,25 +87,27 @@ class MyRecords(Resource, IncidentsModel):
 
     def delete(self, id):
         """ Allows you to delete a red-flag record """
-        incidel = self.db.get_incidents()
-        deleting = self.db.get_one(id)
+        deleting = self.db.delete_redflag(id)
 
-        if not deleting:
-            return {'incidents_id': id, 'message': 'Redflag not found'}, 404
-        else:
-            incidel.remove(deleting)
-
+        if deleting:
+            return make_response(jsonify({
+                'status': 200,
+                "data": [{
+                    "id": id,
+                    "message": "red-flag record has been deleted"
+                }]
+            }))
         return make_response(jsonify({
             'status': 200,
             "data": [{
                 "id": id,
-                "message": "red-flag record has been deleted"
+                'message': 'Redflag not found'
             }]
-        }))
+        }), 404)
 
-    def patch(self, id):
+    def patch(self, location, comment, videos, images):
         """ Allows you to make changes to an exisiting red-flag """
-        topatch = self.db.get_one(id)
+        topatch = self.db.patch_redflags()
 
         if not topatch:
             return {'message': 'Redflag to be edited not found'}, 200

@@ -85,7 +85,40 @@ class IncidentsModel():
                 result = instance
         return result
 
-    # def userid(self):
-    #     if (self.db):
-    #         return self.db[-1]["id"] + 1  # self.db is not iterable
-    #     return 1
+    def delete_redflag(self, id):
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
+        dbconn.commit()
+
+    def edit_redflags(self, incidents_id, createdBy):
+        sql = """ UPDATE incidents
+                SET createdBy = %s
+                WHERE incidents_id = %s"""
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute(sql, (createdBy, incidents_id))
+        dbconn.commit()
+
+    def patch_redflags(self, location, comment, videos, images):
+        patchdata = {
+            "location": location,
+            "comment": comment,
+            "images": images,
+            "videos": videos,
+        }
+
+        query = """INSERT INTO incidents (location, comment,
+                 images, videos) VALUES (
+                  %(location)s, %(comment)s,%(images)s, %(videos)s)"""
+        curr = self.db.cursor()
+        curr.execute(query, patchdata)
+        self.db.commit()
+        return patchdata
+
+        for key in patchdata.keys():
+            if patchdata[key]:
+                columns = ["location", "comment", "images", "videos"]
+                for c in columns:
+                    curr = self.db.cursor()
+                    curr.execute("""UPDATE incidents SET {0} = '{1}' WHERE incidents_id = '{2}'""".format)
