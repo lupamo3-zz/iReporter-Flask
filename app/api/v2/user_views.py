@@ -1,18 +1,18 @@
-from flask import jsonify, make_response, request
-from flask_restful import Resource, Api, abort, request
+from flask import jsonify, make_response
+from flask_restful import Resource, Api, request
 
-from .redflag_models import IncidentsModel
+from .user_models import UsersModel
 
 
-class MyIncidents(Resource, IncidentsModel):
-    """ Docstring for MyIncidents class, Myincidents class has methods
-     for users to Create redflags(POST) and to get all red flag records(GET)"""
+class MyUsers(Resource, UsersModel):
+    """ Docstring for MyUsers class, MyUsers class has methods
+      to Create Users(POST) and to get all users(GET)"""
 
     def __init__(self):
-        self.db = IncidentsModel()
+        self.db = UsersModel()
 
     def post(self):
-        """ Create a redflag """
+        """ Create a user record """
         data = request.get_json(force=True)
         if not data:
             return make_response(jsonify({
@@ -41,7 +41,7 @@ class MyIncidents(Resource, IncidentsModel):
         }), 201)
 
     def get(self):
-        """ Get all red flag records """
+        """ Get all user records """
         fetch_all = self.db.get_incidents()
 
         if fetch_all:
@@ -57,16 +57,16 @@ class MyIncidents(Resource, IncidentsModel):
         }))
 
 
-class MyRecords(Resource, IncidentsModel):
-    """ Docstring for MyRecords class, this class has methods that allows
+class MyUsersSpecific(Resource, UsersModel):
+    """ Docstring for MyUsersSpecific class, this class has methods that allows
     users to get specific records(GET by id), make changes to a
     record(PATCH) and to delete sepecific records(DELETE by id)"""
 
     def __init__(self):
-        self.db = IncidentsModel()
+        self.db = UsersModel()
 
     def get(self, id):
-        """ Get a specific red-flag record """
+        """ Get a specific user record """
         incidents = self.db.get_incidents()
         for i in incidents:
             if i['incidents_id'] == id:
@@ -86,7 +86,7 @@ class MyRecords(Resource, IncidentsModel):
         )
 
     def delete(self, id):
-        """ Allows you to delete a red-flag record """
+        """ Allows you to delete a user  """
         deleting = self.db.delete_redflag(id)
 
         if deleting:

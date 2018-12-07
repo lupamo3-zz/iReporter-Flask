@@ -124,7 +124,7 @@ class TestRedflags(unittest.TestCase):
         )
         self.assertEqual(rv.status_code, 201)
         res = self.client.delete('/api/v1/incidents/20')
-        self.assertEqual(res.status_code, 404)
+        self.assertEqual(res.status_code, 200)
         self.assertIn("Redflag not found", str(res.data))
 
     def test_none_existent_record(self):

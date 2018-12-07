@@ -18,8 +18,7 @@ class IncidentsModel():
         self.type = "Redflags"
         self.incidents_id = "incidents_id"
 
-    """ save our data and appends it to a list """
-
+    """ save our data and appends to the database """
     def save(self, comment, location, images, videos):
 
         incidentdata = {
@@ -61,7 +60,7 @@ class IncidentsModel():
         data = curr.fetchall()
         resp = []
 
-        for i, records in enumerate(data):
+        for records in enumerate(data):
             incidents_id, createdOn, images, videos, location, status, comment = records
             datar = dict(
                 incidents_id=int(incidents_id),
@@ -76,7 +75,6 @@ class IncidentsModel():
         return resp
 
     """ get one incident data"""
-
     def get_one(self, incidents_id):
         result = None
 

@@ -21,7 +21,7 @@ class MyIncidents(Resource, IncidentsModel):
         try:
             if not data:
                 return make_response(jsonify({
-                    "status": 200,
+                    "status": 404,
                     "message": "No data input"
                 }), 404)
             elif not data['location'] or not data["createdBy"] or not data["comment"]:
@@ -32,10 +32,10 @@ class MyIncidents(Resource, IncidentsModel):
                 }), 404)
         except:
             return make_response(jsonify({
-                    "status": 200,
-                    "message": "Kindly check for missing field"
-                }), 404)
-        
+                "status": 404,
+                "message": "Kindly check for missing field"
+            }), 404)
+
         createdBy = data['createdBy']
         location = data['location']
         comment = data['comment']
@@ -64,14 +64,14 @@ class MyIncidents(Resource, IncidentsModel):
             return make_response(jsonify({
                 "status": 400,
                 "error": "Whitespaces not allowed"
-            }))
+            }), 400)
 
         if resp == "missing data":
 
             return make_response(jsonify({
                 "status": 400,
                 "error": "Kindly input the correct data"
-            }))
+            })), 400
 
         return make_response(jsonify({
             "status": 201,
@@ -120,7 +120,7 @@ class MyRecords(Resource, IncidentsModel):
         return make_response(
             jsonify(
                 {
-                    "status": 404,
+                    "status": 200,
                     "error": "Redflag with that id not found"
                 }
             )
@@ -132,7 +132,7 @@ class MyRecords(Resource, IncidentsModel):
         deleting = self.db.get_one(id)
 
         if not deleting:
-            return {'id': id, 'message': 'Redflag not found'}, 404
+            return {'id': id, 'message': 'Redflag not found'}, 200
         else:
             incidel.remove(deleting)
 
