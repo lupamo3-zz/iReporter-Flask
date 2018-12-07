@@ -18,18 +18,24 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-        if not data:
+        try:
+            if not data:
+                return make_response(jsonify({
+                    "status": 200,
+                    "message": "No data input"
+                }), 404)
+            elif not data['location'] or not data["createdBy"] or not data["comment"]:
+                return make_response(jsonify({
+                    "status": 404,
+                    "data": [{"message": "Ensure you have\
+    filled all fields. i.e {} " .format(data)}]
+                }), 404)
+        except:
             return make_response(jsonify({
-                "status": 200,
-                "message": "No data input"
-            }), 404)
-        elif not data['location'] or not data["createdBy"] or not data["comment"]:
-            return make_response(jsonify({
-                "status": 404,
-                "data": [{"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}]
-            }), 404)
-
+                    "status": 200,
+                    "message": "Kindly check for missing field"
+                }), 404)
+        
         createdBy = data['createdBy']
         location = data['location']
         comment = data['comment']
@@ -44,12 +50,6 @@ class MyIncidents(Resource, IncidentsModel):
             return {'message':
                     "CreatedBy name should be valid alphabetic characters"
                     }, 400
-
-        # if not re.match('^[a-zA-Z ]+$', comment):
-        #     return {
-        #         'message':
-        #         "Comment should have valid alphabetic characters"
-        #     }, 400
 
         if not re.match('^[a-zA-Z ]+$', location):
             return {
