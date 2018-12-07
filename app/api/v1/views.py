@@ -1,11 +1,14 @@
-from flask import jsonify, make_response, request
-from flask_restful import Resource, Api, abort, request
+import re
 
-from .models import IncidentsModel, incidents_list
+
+from flask import jsonify, make_response, request
+from flask_restful import Resource, request
+
+from .models import IncidentsModel
 
 
 class MyIncidents(Resource, IncidentsModel):
-    """ Docstring for MyIncidents class, Myincidents class has 
+    """ Docstring for MyIncidents class, Myincidents class has
     methods for users to Create redflags(POST) and to get all red
      flag records(GET)"""
 
@@ -30,6 +33,29 @@ class MyIncidents(Resource, IncidentsModel):
         createdBy = data['createdBy']
         location = data['location']
         comment = data['comment']
+
+        if not isinstance(data['createdBy'], str) or not isinstance(data['location'], str):
+            return {'message': 'Kindly input a string type'}
+
+        if not isinstance(data['comment'], str):
+            return {'message': 'Kindly input a string type'}
+
+        if not re.match('^[a-zA-Z ]+$', createdBy):
+            return {'message':
+                    "CreatedBy name should be valid alphabetic characters"
+                    }, 400
+
+        # if not re.match('^[a-zA-Z ]+$', comment):
+        #     return {
+        #         'message':
+        #         "Comment should have valid alphabetic characters"
+        #     }, 400
+
+        if not re.match('^[a-zA-Z ]+$', location):
+            return {
+                'message':
+                "Location name should be of valid alphabetic characters"
+            }, 400
 
         resp = self.db.save(createdBy, location, comment)
 
@@ -124,8 +150,7 @@ class MyRecords(Resource, IncidentsModel):
 
         if not topatch:
             return {'message': 'Redflag to be edited not found'}, 200
-        else:
-            topatch.update(request.get_json())
+        topatch.update(request.get_json())
 
         return make_response(jsonify({
             'status': 200,

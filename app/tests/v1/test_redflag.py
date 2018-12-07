@@ -56,11 +56,12 @@ class TestRedflags(unittest.TestCase):
 
     def test_get_one_record(self):
         """ Test if API is able to get a single ID record"""
-        self.client.post(
-            '/api/v1/incidents/1',
+        response = self.client.post(
+            '/api/v1/incidents',
             data=json.dumps(self.data),
             content_type="application/json"
         )
+        self.assertEqual(response.status_code, 201)
         response = self.client.get("/api/v1/incidents/1")
         self.assertIn("data", str(response.data))
         self.assertEqual(response.status_code, 200)
@@ -68,11 +69,12 @@ class TestRedflags(unittest.TestCase):
     def test_patch(self):
         """Test if the Patch end point is working """
 
-        self.client.post(
+        response = self.client.post(
             '/api/v1/incidents',
             data=json.dumps(self.data),
             content_type="application/json"
         )
+        self.assertEqual(response.status_code, 201)
         patch_record = {
             'location': 'Andela Lagos'
         }
