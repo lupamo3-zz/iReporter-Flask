@@ -1,7 +1,6 @@
 import re
 
 from datetime import datetime
-from flask import request
 
 
 def get_timestamp():
@@ -31,7 +30,7 @@ class IncidentsModel():
         validate_data = "missing data"
 
         for i in incidentdata:
-            if type(createdBy) != str or type(location) != str or type(comment) != str or type(self.status) != str:
+            if type(self.status) != str:
                 return validate_data
             elif type(self.userid()) != int or type(self.createdOn) != str:
                 return validate_data
@@ -45,17 +44,7 @@ class IncidentsModel():
         self.db.append(incidentdata)
         return incidentdata
 
-    def check_location(self, location):
-        items = {
-            "location": location
-        }
-        regex = re.compile(r'\A[a-zA-Z0-9*]+\Z')
-
-        if not regex.match(location):
-            return items
-
     """get all the incidents """
-
     def get_incidents(self):
         return self.db
 
@@ -68,6 +57,7 @@ class IncidentsModel():
                 result = instance
         return result
 
+    """ returns the userid primary key """
     def userid(self):
         if len(self.db):
             return self.db[-1]["id"] + 1
