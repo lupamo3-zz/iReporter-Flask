@@ -15,7 +15,6 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-        keys = data.keys()
         if not data:
             return make_response(jsonify({
                 "status": 200,
@@ -33,6 +32,13 @@ class MyIncidents(Resource, IncidentsModel):
         comment = data['comment']
 
         resp = self.db.save(createdBy, location, comment)
+
+        if resp == "white space":
+
+            return make_response(jsonify({
+                "status": 400,
+                "error": "Whitespaces not allowed"
+            }))
 
         if resp == "missing data":
 

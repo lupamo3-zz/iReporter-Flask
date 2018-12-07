@@ -13,3 +13,13 @@ script:
 
 after_success: 
   - coveralls
+
+services:
+ - postgresql
+
+addons:
+ postgresql: "9.5"
+
+before_script:
+ - psql -c 'CREATE DATABASE ireporter_test' -U postgres
+ - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres;" -U postgres

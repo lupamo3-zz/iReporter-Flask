@@ -105,9 +105,9 @@ class MyRecords(Resource, IncidentsModel):
             }]
         }), 404)
 
-    def patch(self, id):
+    def patch(self, location, comment, videos, images):
         """ Allows you to make changes to an exisiting red-flag """
-        topatch = self.db.edit_redflags(id)
+        topatch = self.db.patch_redflags()
 
         if not topatch:
             return {'message': 'Redflag to be edited not found'}, 200

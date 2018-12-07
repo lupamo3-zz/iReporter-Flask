@@ -23,6 +23,18 @@ class TestRedflags(unittest.TestCase):
             "id": 1
         }
 
+        self.no_comment = {
+            "createdOn": "2018-11-29 05:21:37",
+            "createdBy": "Norbert",
+            "location": "Mount Sinai",
+            "status": "There is a bush on fire",
+            "comment": "",
+            "id": 1
+        }
+
+        self.no_input = {
+        }
+
     def test_get_all_records(self):
         """ Test if API endpoint is able to get all records correctly """
 
@@ -83,10 +95,47 @@ class TestRedflags(unittest.TestCase):
         res = self.client.delete('/api/v1/incidents/1')
         self.assertEqual(res.status_code, 200)
 
+    def test_record_without_comment(self):
+        """ Test if API can post with one field not filled"""
+        response = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.no_comment),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_creation_record_empty_fileds(self):
+        """ Test if API can post with all fields empty"""
+        response = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.no_input),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_no_record_to_delete(self):
+        """Test if API can delete existing records """
+        rv = self.client.post(
+            '/api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        self.assertEqual(rv.status_code, 201)
+        res = self.client.delete('/api/v1/incidents/20')
+        self.assertEqual(res.status_code, 404)
+        self.assertIn("Redflag not found", str(res.data))
+
+    def test_none_existent_record(self):
+        """ Test if API is able to get non-existent record"""
+        response = self.client.get(
+            '/api/v1/incidents/200'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Redflag with that id not found", str(response.data))
+
     def tearDown(self):
         """Teardown all initialized variables"""
         pass
-
 
 if __name__ == '__main__':
     unittest.main()
