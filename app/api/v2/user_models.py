@@ -13,13 +13,13 @@ class UsersModel():
 
     def __init__(self):
         self.db = init_db()
-        self.registered = datetime.datetime.utcnow()
+        self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
         self.user_id = "user_id"
         self.isAdmin = "isAdmin"
 
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
-             phonenumber, registered):
+             phonenumber):
 
         userdata = {
             "user_id": self.user_id,
@@ -29,13 +29,14 @@ class UsersModel():
             "username": username,
             "email": email,
             "phonenumber": phonenumber,
-            "registered": self.registered
+            "registered": self.registered,
+            "isAdmin": False or True
         }
 
-        inquire = """INSERT INTO incidents (firstname, lastname,
-                 othernames, username, email, phonenumber, registered) VALUES (
+        inquire = """INSERT INTO users (firstname, lastname,
+                 othernames, username, email, phonenumber, registered, isAdmin) VALUES (
                   %(firstname)s, %(lastname)s, %(othernames)s, %(username)s,
-                  %(email)s, %(phonenumber)s, %(registered)s)"""
+                  %(email)s, %(phonenumber)s, %(registered)s, %(isAdmin)s)"""
         curr = self.db.cursor()
         curr.execute(inquire, userdata)
         self.db.commit()
@@ -48,11 +49,11 @@ class UsersModel():
         curr = usconn.cursor()
         curr.execute("""SELECT user_id, firstname, lastname,
                      othernames, username, email, phonenumber, registered,
-                     isAdmin FROM incidents""")
+                     isAdmin FROM users""")
         user_info = curr.fetchall()
         response = []
 
-        for userrecords in enumerate(user_info):
+        for i, userrecords in enumerate(user_info):
             user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin = userrecords
             userdata = dict(
                 user_id=int(user_id),
@@ -80,5 +81,5 @@ class UsersModel():
     def delete_user(self, id):
         usconn = self.db
         curr = usconn.cursor()
-        curr.execute("DELETE FROM users WHERE users_id = %s", (id,))
+        curr.execute("DELETE FROM users WHERE user_id = %s", (id,))
         usconn.commit()
