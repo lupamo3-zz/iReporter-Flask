@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import request
 
-from ...database_config import init_db
+from ....database_config import init_db
 
 
 def get_timestamp():

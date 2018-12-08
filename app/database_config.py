@@ -28,23 +28,31 @@ def create_tables():
 
 
 def destroy_tables():
-    pass
+    drop1 = [
+        """DROP TABLE IF EXISTS users CASCADE""",
+
+        """DROP TABLE IF EXISTS incidents CASCADE"""
+    ]
+    queries = [drop1]
+    return queries
 
 
 def tables():
-    userstable = """CREATE TABLE IF NOT EXISTS users (
+    userstables = """CREATE TABLE IF NOT EXISTS Users (
         user_id serial PRIMARY KEY NOT NULL,
         firstname character varying(50) NOT NULL,
         lastname character varying(50) NOT NULL,
         othernames character varying(50),
-        username character varying(50) NOT NULL,
-        email character varying(50),
-        phonenumber character varying(50),
+        username character varying(50) NOT NULL UNIQUE,
+        email character varying(50) UNIQUE,
+        phonenumber character varying(50) UNIQUE,
         registered timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
-        isAdmin boolean NOT NULL
+        isAdmin boolean NOT NULL,
+        password character varying(50) NOT NULL,
+        confirm_password character varying(50) NOT NULL
     )"""
 
-    incidentstable = """CREATE TABLE IF NOT EXISTS incidents (
+    incidentstables = """CREATE TABLE IF NOT EXISTS Incidents (
         incidents_id serial PRIMARY KEY NOT NULL,
         type character varying(20) NOT NULL,
         status character varying(100) NOT NULL,
@@ -56,5 +64,5 @@ def tables():
         videos character varying(200) NOT NULL
     )"""
 
-    queries = [userstable, incidentstable]
+    queries = [userstables, incidentstables]
     return queries

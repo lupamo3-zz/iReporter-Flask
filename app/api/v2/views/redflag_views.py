@@ -1,7 +1,7 @@
 from flask import jsonify, make_response, request
 from flask_restful import Resource, Api, abort, request
 
-from .redflag_models import IncidentsModel
+from ..models.redflag_models import IncidentsModel
 
 
 class MyIncidents(Resource, IncidentsModel):
