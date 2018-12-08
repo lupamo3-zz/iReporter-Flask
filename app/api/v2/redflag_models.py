@@ -50,18 +50,17 @@ class IncidentsModel():
         return incidentdata
 
     """get all the incidents """
-
     def get_incidents(self):
 
         dbconn = self.db
         curr = dbconn.cursor()
         curr.execute("""SELECT incidents_id, createdOn, images,
-                     videos, location, status, comment FROM incidents""")
+                     videos, comment, location, status, type FROM incidents""")
         data = curr.fetchall()
         resp = []
 
         for records in enumerate(data):
-            incidents_id, createdOn, images, videos, location, status, comment = records
+            incidents_id, createdOn, images, videos, location, status, comment, type = records
             datar = dict(
                 incidents_id=int(incidents_id),
                 createdOn=createdOn,
@@ -69,7 +68,8 @@ class IncidentsModel():
                 videos=videos,
                 comment=comment,
                 location=location,
-                status=status
+                status=status,
+                type=type
             )
             resp.append(datar)
         return resp

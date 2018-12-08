@@ -14,62 +14,53 @@ class MyUsers(Resource, UsersModel):
     def post(self):
         """ Create a user record """
         data = request.get_json(force=True)
-        if not data:
-            return make_response(jsonify({
-                "status": 200,
-                "message": "No data input"
-            }), 404)
-        elif not data['location'] or not data["comment"]:
-            return make_response(jsonify({
-                "status": 404,
-                "data": [{"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}]
-            }), 404)
 
-        videos = data['videos']
-        comment = data['comment']
-        images = data['images']
-        location = data['location']
+        firstname = data['firstname']
+        lastname = data['lastname']
+        othernames = data['othernames']
+        username = data['username']
+        email = data['email']
+        phonenumber = data['phonenumber']
 
-        result = self.db.save(videos, comment, images, location)
+        rels = self.db.save(firstname, lastname, othernames, username, email, phonenumber)
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "incident_created": result,
-                "message": "Created redflag record"
+                "incident_created": rels,
+                "message": "Created user successfuly "
             }]
         }), 201)
 
     def get(self):
         """ Get all user records """
-        fetch_all = self.db.get_incidents()
+        all_users = self.db.get_users()
 
-        if fetch_all:
+        if all_users:
 
             return make_response(jsonify({
                 "status": 200,
-                "data": fetch_all
+                "data": all_users
             }), 200)
 
         return make_response(jsonify({
             "status": 404,
-            "error": "No Red-flag found"
+            "error": "No Users found"
         }))
 
 
 class MyUsersSpecific(Resource, UsersModel):
     """ Docstring for MyUsersSpecific class, this class has methods that allows
-    users to get specific records(GET by id), make changes to a
-    record(PATCH) and to delete sepecific records(DELETE by id)"""
+    users to get specific users(GET by id), make changes to a
+    user(PATCH) and to delete specific (DELETE by id)"""
 
     def __init__(self):
         self.db = UsersModel()
 
     def get(self, id):
-        """ Get a specific user record """
-        incidents = self.db.get_incidents()
-        for i in incidents:
-            if i['incidents_id'] == id:
+        """ Get a specific user """
+        app_users = self.db.get_users()
+        for i in app_users:
+            if i['user_id'] == id:
 
                 return make_response(jsonify({
                     "status": 200,
@@ -80,45 +71,27 @@ class MyUsersSpecific(Resource, UsersModel):
             jsonify(
                 {
                     "status": 404,
-                    "error": "Redflag with that id not found"
+                    "error": "User with that id not found"
                 }
             )
         )
 
     def delete(self, id):
         """ Allows you to delete a user  """
-        deleting = self.db.delete_redflag(id)
+        deleting = self.db.delete_user(id)
 
         if deleting:
             return make_response(jsonify({
                 'status': 200,
                 "data": [{
                     "id": id,
-                    "message": "red-flag record has been deleted"
+                    "message": "User with that record has been deleted"
                 }]
             }))
         return make_response(jsonify({
             'status': 200,
             "data": [{
                 "id": id,
-                'message': 'Redflag not found'
+                'message': 'User not found'
             }]
         }), 404)
-
-    def patch(self, id):
-        """ Allows you to make changes to an exisiting red-flag """
-        topatch = self.db.edit_redflags()
-
-        if not topatch:
-            return {'message': 'Redflag to be edited not found'}, 200
-        else:
-            topatch.update(request.get_json())
-
-        return make_response(jsonify({
-            'status': 200,
-            'data': [{
-                'id': id,
-                "data": topatch,
-                "message": "Updated red-flag record location"
-            }]
-        }), 201)
