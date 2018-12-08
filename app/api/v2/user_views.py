@@ -78,9 +78,9 @@ class MyUsersSpecific(Resource, UsersModel):
 
     def delete(self, id):
         """ Allows you to delete a user  """
-        deleting = self.db.delete_user(id)
+        expunge = self.db.delete_user(id)
 
-        if deleting:
+        if expunge:
             return make_response(jsonify({
                 'status': 200,
                 "data": [{
