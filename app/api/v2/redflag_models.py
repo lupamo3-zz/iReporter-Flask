@@ -54,22 +54,22 @@ class IncidentsModel():
 
         dbconn = self.db
         curr = dbconn.cursor()
-        curr.execute("""SELECT incidents_id, createdOn, images,
-                     videos, comment, location, status, type FROM incidents""")
+        curr.execute("""SELECT incidents_id, type, status, comment, createdOn, 
+                    location,  images, videos FROM incidents""")
         data = curr.fetchall()
         resp = []
 
-        for records in enumerate(data):
-            incidents_id, createdOn, images, videos, location, status, comment, type = records
+        for r, records in enumerate(data):
+            incidents_id, type, status, comment, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
-                createdOn=createdOn,
-                images=images,
-                videos=videos,
-                comment=comment,
-                location=location,
+                type=type,
                 status=status,
-                type=type
+                comment=comment,
+                createdOn=createdOn,
+                location=location,
+                images=images,
+                videos=videos
             )
             resp.append(datar)
         return resp

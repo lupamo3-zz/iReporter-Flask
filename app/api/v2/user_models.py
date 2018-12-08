@@ -78,8 +78,8 @@ class UsersModel():
                 result = i
         return result
 
-    def delete_user(self, id):
+    def delete_user(self, user_id):
         usconn = self.db
         curr = usconn.cursor()
-        curr.execute("DELETE FROM users WHERE user_id = %s", (id,))
+        curr.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
         usconn.commit()
