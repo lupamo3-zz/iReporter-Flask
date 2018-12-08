@@ -94,3 +94,13 @@ class UsersModel():
         curr = usconn.cursor()
         curr.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
         usconn.commit()
+
+    def get_username_user(self, username):
+        """ Get user by username """
+        usconn = self.db
+        curr = usconn.cursor()
+        curr.execute("""SELECT * FROM users WHERE username=%s""", (username, ))
+        selectuser = curr.fetchone()
+        usconn.commit()
+        if selectuser:
+            return selectuser

@@ -18,9 +18,9 @@ class SignUp(Resource, UsersModel):
         data = request.get_json(force=True)
         if not data:
             return make_response(jsonify({
-                "status": 404,
+                "status": 200,
                 "message": "Kindly input user information"
-            }), 404)
+            }), 200)
 
         firstname = data['firstname']
         lastname = data['lastname']
@@ -57,6 +57,10 @@ class SignIn(Resource, UsersModel):
     def post(self):
         """ Registered user login and validation """
         login_data = request.get_json(force=True)
-        try:
-            username = data['username']
-            password = data['password']
+        if not login_data:
+            return make_response(jsonify({
+                "status": 200,
+                "message": "Kindly input Username and Password details"
+            }), 404)
+        username = login_data['username']
+        password = login_data['password']
