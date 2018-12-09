@@ -1,5 +1,6 @@
 from flask import jsonify, make_response
 from flask_restful import Resource, Api, request
+from flask_jwt_extended import jwt_required
 
 from ..models.user_models import UsersModel
 
@@ -11,6 +12,7 @@ class MyUsers(Resource, UsersModel):
     def __init__(self):
         self.db = UsersModel()
 
+    @jwt_required
     def get(self):
         """ Get all user records """
         all_users = self.db.get_users()
@@ -36,6 +38,7 @@ class MyAdmin(Resource, UsersModel):
     def __init__(self):
         self.db = UsersModel()
 
+    @jwt_required
     def delete(self, id):
         """ Allows admin to delete a user  """
         expunge = self.db.delete_user(id)
@@ -56,6 +59,7 @@ class MyAdmin(Resource, UsersModel):
             }]
         }), 404)
 
+    @jwt_required
     def get(self, id):
         """ Admin get a specif user by id """
 
