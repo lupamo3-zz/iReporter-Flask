@@ -19,12 +19,13 @@ class IncidentsModel():
         self.incidents_id = "incidents_id"
 
     """ save our data and appends to the database """
-    def save(self, comment, location, images, videos):
+    def save(self, comment, location, images, videos, createdBy):
 
         incidentdata = {
             "incidents_id": self.incidents_id,
             "location": location,
             "comment": comment,
+            "createdBy": createdBy,
             "status": self.status,
             "createdOn": self.createdOn,
             "images": images,
@@ -40,9 +41,9 @@ class IncidentsModel():
         #     elif type(self.incidents_id) != int or type(self.createdOn) != str:
         #         return validate_data
 
-        query = """INSERT INTO incidents (location, comment,
+        query = """INSERT INTO incidents (location, comment, createdBy,
                  status, createdOn, images, videos, type) VALUES (
-                  %(location)s, %(comment)s, %(status)s, %(createdOn)s,
+                  %(location)s, %(comment)s, %(createdBy)s, %(status)s, %(createdOn)s,
                   %(images)s, %(videos)s, %(type)s)"""
         curr = self.db.cursor()
         curr.execute(query, incidentdata)
@@ -54,18 +55,19 @@ class IncidentsModel():
 
         dbconn = self.db
         curr = dbconn.cursor()
-        curr.execute("""SELECT incidents_id, type, status, comment, createdOn, 
+        curr.execute("""SELECT incidents_id, type, status, comment, createdBy, createdOn, 
                     location,  images, videos FROM incidents""")
         data = curr.fetchall()
         resp = []
 
         for r, records in enumerate(data):
-            incidents_id, type, status, comment, createdOn, location, images, videos = records
+            incidents_id, type, status, comment, createdBy, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
                 type=type,
                 status=status,
                 comment=comment,
+                createdBy=createdBy,
                 createdOn=createdOn,
                 location=location,
                 images=images,

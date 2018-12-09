@@ -1,5 +1,6 @@
 from flask import jsonify, make_response, request
 from flask_restful import Resource, Api, abort, request
+from flask_jwt_extended import jwt_required, jwt_refresh_token_required
 
 from ..models.redflag_models import IncidentsModel
 
@@ -11,6 +12,7 @@ class MyIncidents(Resource, IncidentsModel):
     def __init__(self):
         self.db = IncidentsModel()
 
+    @jwt_required
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
@@ -30,8 +32,9 @@ class MyIncidents(Resource, IncidentsModel):
         comment = data['comment']
         images = data['images']
         location = data['location']
+        createdBy = data['createdBy']
 
-        result = self.db.save(videos, comment, images, location)
+        result = self.db.save(videos, comment, images, location, createdBy)
         return make_response(jsonify({
             "status": 201,
             "data": [{
@@ -40,6 +43,7 @@ class MyIncidents(Resource, IncidentsModel):
             }]
         }), 201)
 
+    @jwt_required
     def get(self):
         """ Get all red flag records """
         fetch_all = self.db.get_incidents()
@@ -65,6 +69,7 @@ class MyRecords(Resource, IncidentsModel):
     def __init__(self):
         self.db = IncidentsModel()
 
+    @jwt_required
     def get(self, id):
         """ Get a specific red-flag record """
         incidents = self.db.get_incidents()
@@ -85,6 +90,7 @@ class MyRecords(Resource, IncidentsModel):
             )
         )
 
+    @jwt_required
     def delete(self, id):
         """ Allows you to delete a red-flag record """
         deleting = self.db.delete_redflag(id)
@@ -105,6 +111,7 @@ class MyRecords(Resource, IncidentsModel):
             }]
         }), 404)
 
+    @jwt_required
     def patch(self, location, comment, videos, images):
         """ Allows you to make changes to an exisiting red-flag """
         topatch = self.db.patch_redflags()
