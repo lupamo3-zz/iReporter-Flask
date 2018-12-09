@@ -67,7 +67,8 @@ class SignIn(Resource, UsersModel):
 
     def __init__(self):
         self.db = UsersModel()
-
+    
+    
     def post(self):
         """ Registered user login and validation """
         login_data = request.get_json(force=True)
