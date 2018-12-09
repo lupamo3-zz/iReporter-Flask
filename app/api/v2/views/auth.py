@@ -74,10 +74,9 @@ class SignIn(Resource, UsersModel):
                 "status": 200,
                 "message": "Kindly input Username and Password details"
             }), 404)
-        # username = login_data['username']
-        # password = login_data['password']
 
         user = self.db.get_username_user(login_data['username'])
+        auth_user = self.db.get_users()
 
         if not user:
             return make_response(jsonify({
@@ -87,7 +86,7 @@ class SignIn(Resource, UsersModel):
             }))
 
         # access_token = create_access_token(identity=username)
-        if login_data['password'] == login_data['username']:
+        if user == auth_user:
             return make_response(jsonify({
                 # "access_token": access_token,
                 "status": user,
