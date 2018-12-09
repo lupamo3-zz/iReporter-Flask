@@ -1,7 +1,7 @@
 from .views.redflag_views import MyRecords, MyIncidents
 
 from .views.user_views import MyUsers, MyAdmin
-from .views.auth import SignUp
+from .views.auth import SignUp, SignIn
 
 
 from flask_restful import Resource, Api
@@ -14,3 +14,4 @@ api.add_resource(MyRecords, '/incidents/<int:id>')
 api.add_resource(MyUsers, '/users')
 api.add_resource(MyAdmin, '/users/<int:id>')
 api.add_resource(SignUp, '/signup')
+api.add_resource(SignIn, '/login')
