@@ -9,17 +9,15 @@ from flask_jwt_extended import JWTManager
 
 # # local  imports
 from instance.config import app_config
-# from .database_config import create_tables
-# create_tables()
-
-
-jwt = JWTManager()
+from .database_config import create_tables
+create_tables()
 
 
 def create_app():
     app = Flask(__name__)
 
     app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+    jwt = JWTManager(app)
 
     from .api.v1 import version_1 as v1
     app.register_blueprint(v1)
@@ -28,3 +26,4 @@ def create_app():
     app.register_blueprint(v2)
 
     return app
+

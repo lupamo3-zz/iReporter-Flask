@@ -48,8 +48,7 @@ def tables():
         phonenumber character varying(50) UNIQUE,
         registered timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
         isAdmin boolean NOT NULL,
-        password character varying(50) NOT NULL,
-        confirm_password character varying(50) NOT NULL
+        password character varying(1250) NOT NULL
     )"""
 
     incidentstables = """CREATE TABLE IF NOT EXISTS Incidents (

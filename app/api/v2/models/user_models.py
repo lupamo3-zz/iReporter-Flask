@@ -20,7 +20,7 @@ class UsersModel():
 
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
-             phonenumber, password, confirm_password):
+             phonenumber, password):
 
         userdata = {
             "user_id": self.user_id,
@@ -32,16 +32,15 @@ class UsersModel():
             "phonenumber": phonenumber,
             "registered": self.registered,
             "isAdmin": False or True,
-            "password": password,
-            "confirm_password": confirm_password
+            "password": password
         }
 
         inquire = """INSERT INTO users (firstname, lastname,
                  othernames, username, email, phonenumber, registered,
-                  isAdmin, password, confirm_password) VALUES (
+                  isAdmin, password) VALUES (
                   %(firstname)s, %(lastname)s, %(othernames)s, %(username)s,
                   %(email)s, %(phonenumber)s, %(registered)s, %(isAdmin)s,
-                   %(password)s, %(confirm_password)s)"""
+                   %(password)s)"""
         curr = self.db.cursor()
         curr.execute(inquire, userdata)
         self.db.commit()
@@ -54,12 +53,12 @@ class UsersModel():
         curr = usconn.cursor()
         curr.execute("""SELECT user_id, firstname, lastname,
                      othernames, username, email, phonenumber, registered,
-                     isAdmin, password, confirm_password FROM users""")
+                     isAdmin, password FROM users""")
         user_info = curr.fetchall()
         response = []
 
         for i, userrecords in enumerate(user_info):
-            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin, password, confirm_password = userrecords
+            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin, password = userrecords
             userdata = dict(
                 user_id=int(user_id),
                 firstname=firstname,
@@ -70,8 +69,7 @@ class UsersModel():
                 phonenumber=phonenumber,
                 registered=registered,
                 isAdmin=isAdmin,
-                password=password,
-                confirm_password=confirm_password
+                password=password
             )
             response.append(userdata)
         return response
@@ -105,3 +103,9 @@ class UsersModel():
         usconn.commit()
         if selectuser:
             return selectuser
+
+    def login_user(self):
+        usconn = self.db
+        curr = usconn.cursor()
+        username = request.get_json()['username']
+        curr.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
