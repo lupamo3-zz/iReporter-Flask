@@ -1,5 +1,6 @@
 from datetime import datetime
 from flask import request
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from ....database_config import init_db
 

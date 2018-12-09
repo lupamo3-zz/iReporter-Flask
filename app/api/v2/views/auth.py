@@ -2,6 +2,12 @@ import re
 
 from flask_restful import request, Resource
 from flask import jsonify, make_response
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
 
 from ..models.user_models import UsersModel
 
@@ -36,6 +42,12 @@ class SignUp(Resource, UsersModel):
                 "data": 400,
                 "message": "Passwords not matching"
             }))
+
+        user = self.db.get_username_user(username)
+        if user:
+            return make_response(jsonify({
+                "message": "User {} already exists".format(data['username'])
+            }))
         sign_up = self.db.save(firstname, lastname, othernames, username,
                                email, phonenumber, password, confirm_password)
 
@@ -62,5 +74,27 @@ class SignIn(Resource, UsersModel):
                 "status": 200,
                 "message": "Kindly input Username and Password details"
             }), 404)
-        username = login_data['username']
-        password = login_data['password']
+        # username = login_data['username']
+        # password = login_data['password']
+
+        user = self.db.get_username_user(login_data['username'])
+
+        if not user:
+            return make_response(jsonify({
+                'message': 'User {} doesn\'t exist'.format(
+                    login_data['username']
+                )
+            }))
+
+        # access_token = create_access_token(identity=username)
+        if login_data['password'] == login_data['username']:
+            return make_response(jsonify({
+                # "access_token": access_token,
+                "status": user,
+                "message": "Logged in as {}".format(user.username)
+            }), 200)
+
+        return make_response(jsonify({
+            "status": 401,
+            "message": "Wrong credentials"
+        }))
