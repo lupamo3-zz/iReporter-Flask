@@ -7,18 +7,18 @@ db_url = os.getenv('DATABASE_URL')
 testdb_url = os.getenv('TESTDATABASE_URL')
 
 
-def connection(db_url):
-    conn = psycopg2.connect(db_url)
+def connection(testdb_url):
+    conn = psycopg2.connect(testdb_url)
     return conn
 
 
 def init_db():
-    con = connection(db_url)
+    con = connection(testdb_url)
     return con
 
 
 def create_tables():
-    conn = connection(db_url)
+    conn = connection(testdb_url)
     curr = conn.cursor()
     queries = tables()
 
