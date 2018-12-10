@@ -9,11 +9,11 @@ from flask_jwt_extended import JWTManager
 
 # # local  imports
 from instance.config import app_config
-# from .database_config import create_tables
-# create_tables()
+from .database_config import create_tables
+create_tables()
 
 
-def create_app():
+def create_app(config_name):
     app = Flask(__name__)
     app.config.from_object(app_config['testing'])
 

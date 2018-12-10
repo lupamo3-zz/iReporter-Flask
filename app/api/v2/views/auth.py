@@ -51,7 +51,7 @@ class SignUp(Resource, UsersModel):
                 "status": 201,
                 "data": [{
                     "access_token": access_token,
-                    "refresh_token": resfresh_token,
+                    "refresh_token": refresh_token,
                     "incident_created": sign_up,
                     "message": "Created {} successfuly, you can now login ".format(username)
                 }]
@@ -91,8 +91,8 @@ class SignIn(Resource, UsersModel):
             }))
 
         if not self.db.login_user():
-            access_token = create_access_token(identity=login_data['username'])
-            refresh_token = create_refresh_token(identity=login_data['username'])
+            access_token = create_access_token(identity=login_data['username'], expires_delta=False)
+            refresh_token = create_refresh_token(identity=login_data['username'], expires_delta=False)
             return make_response(jsonify({
                 "access_token": access_token,
                 "refresh_token": refresh_token,

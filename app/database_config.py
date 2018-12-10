@@ -65,3 +65,4 @@ def tables():
 
     queries = [userstables, incidentstables]
     return queries
+
