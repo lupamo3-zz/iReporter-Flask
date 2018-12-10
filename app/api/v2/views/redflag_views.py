@@ -3,6 +3,7 @@ from flask_restful import Resource, Api, abort, request
 from flask_jwt_extended import jwt_required, jwt_refresh_token_required
 
 from ..models.redflag_models import IncidentsModel
+from ....database_config import init_db
 
 
 class MyIncidents(Resource, IncidentsModel):
@@ -87,7 +88,7 @@ class MyRecords(Resource, IncidentsModel):
                     "status": 404,
                     "error": "Redflag with that id not found"
                 }
-            )
+            ), 404
         )
 
     @jwt_required
@@ -111,21 +112,53 @@ class MyRecords(Resource, IncidentsModel):
             }]
         }), 404)
 
+
+class MySpecificRecords(Resource, IncidentsModel): 
+    """ Docstring for MySpecificRecords class, this class has methods that allows
+    users to make specific changes to a record(PATCH) """
+
+    def __init__(self):
+        self.db = IncidentsModel()
+
     @jwt_required
-    def patch(self, location, comment, videos, images):
+    def patch(self, id):
         """ Allows you to make changes to an exisiting red-flag """
-        topatch = self.db.patch_redflags()
-
-        if not topatch:
-            return {'message': 'Redflag to be edited not found'}, 200
-        else:
-            topatch.update(request.get_json())
-
+        gett = self.db.get_incident_by_id(id=id)
+        data = request.get_json(force=True)
+        print(gett)
+        if gett:
+            self.db.update_location(data['location'], id)
+            return make_response(jsonify({
+                "New Location": data['location'],
+                "message": "Updated location successfully",
+                "status": 200
+            }))
         return make_response(jsonify({
-            'status': 200,
-            'data': [{
-                'id': id,
-                "data": topatch,
-                "message": "Updated red-flag record location"
-            }]
-        }), 201)
+            "message": " Incident not found",
+            "status": 404
+        }), 404)
+ 
+class MyCommentRecords(Resource, IncidentsModel):
+    """ Docstring for MySpecificRecords class, this class has methods that allows
+    users to make specific changes to a record(PATCH) """
+
+    def __init__(self):
+        self.db = IncidentsModel()
+
+    @jwt_required
+    def patch(self, id):
+        """ Allows you to make changes to an exisiting red-flag """
+        gett = self.db.get_incident_by_id(id=id)
+        data = request.get_json(force=True)
+        print(gett)
+        if gett:
+            self.db.update_comment(data['comment'], id)
+            return make_response(jsonify({
+                "New Comment": data['comment'],
+                "message": "Updated comment successfully",
+                "status": 200
+            }))
+        return make_response(jsonify({
+            "message": " Incident not found",
+            "status": 404
+        }), 404)

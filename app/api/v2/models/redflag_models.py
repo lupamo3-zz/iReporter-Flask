@@ -100,25 +100,31 @@ class IncidentsModel():
         curr.execute(sql, (createdBy, incidents_id))
         dbconn.commit()
 
-    def patch_redflags(self, location, comment, videos, images):
-        patchdata = {
-            "location": location,
-            "comment": comment,
-            "images": images,
-            "videos": videos,
-        }
+    def get_incident_by_id(self, id):
+        # Todo
+        # Add other things to update
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        incident = curr.fetchall()
+        return incident
 
-        query = """INSERT INTO incidents (location, comment,
-                 images, videos) VALUES (
-                  %(location)s, %(comment)s,%(images)s, %(videos)s)"""
-        curr = self.db.cursor()
-        curr.execute(query, patchdata)
-        self.db.commit()
-        return patchdata
+    def update_location(self, location, incidents_id):
+        dbconn = self.db
+        curr=dbconn.cursor()
+        curr.execute(
+            """ UPDATE Incidents
+            SET location = %s
+            WHERE incidents_id=%s""", (location, incidents_id)
+             )
+        dbconn.commit()
 
-        for key in patchdata.keys():
-            if patchdata[key]:
-                columns = ["location", "comment", "images", "videos"]
-                for c in columns:
-                    curr = self.db.cursor()
-                    curr.execute("""UPDATE incidents SET {0} = '{1}' WHERE incidents_id = '{2}'""".format)
+    def update_comment(self, comment, incidents_id):
+        dbconn = self.db
+        curr=dbconn.cursor()
+        curr.execute(
+            """ UPDATE Incidents
+            SET comment = %s
+            WHERE incidents_id=%s""", (comment, incidents_id)
+             )
+        dbconn.commit()
