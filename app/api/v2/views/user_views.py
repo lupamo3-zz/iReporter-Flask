@@ -40,8 +40,10 @@ class MyAdmin(Resource, UsersModel):
 
     @jwt_required
     def delete(self, id):
-        """ Allows admin to delete a user  """
+        
+
         expunge = self.db.delete_user(id)
+
 
         if expunge:
             return make_response(jsonify({

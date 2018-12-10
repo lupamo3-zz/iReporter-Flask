@@ -114,15 +114,14 @@ class MyRecords(Resource, IncidentsModel):
 
 
 class MySpecificRecords(Resource, IncidentsModel): 
-    """ Docstring for MySpecificRecords class, this class has methods that allows
-    users to make specific changes to a record(PATCH) """
+    """ Users can change the location of a record occurrence using Patch """
 
     def __init__(self):
         self.db = IncidentsModel()
 
     @jwt_required
     def patch(self, id):
-        """ Allows you to make changes to an exisiting red-flag """
+        """ Makes the location editable by user """
         gett = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
         print(gett)
@@ -139,15 +138,14 @@ class MySpecificRecords(Resource, IncidentsModel):
         }), 404)
  
 class MyCommentRecords(Resource, IncidentsModel):
-    """ Docstring for MySpecificRecords class, this class has methods that allows
-    users to make specific changes to a record(PATCH) """
+    """ Edit the comment of a specific intervention record. """
 
     def __init__(self):
         self.db = IncidentsModel()
 
     @jwt_required
     def patch(self, id):
-        """ Allows you to make changes to an exisiting red-flag """
+        """ Allows you to make changes to redflag commments"""
         gett = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
         print(gett)
