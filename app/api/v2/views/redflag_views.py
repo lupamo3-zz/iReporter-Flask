@@ -17,6 +17,7 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
+        
         if not data:
             return make_response(jsonify({
                 "status": 200,
@@ -28,18 +29,11 @@ class MyIncidents(Resource, IncidentsModel):
                 "data": [{"message": "Ensure you have\
  filled all fields. i.e {} " .format(data)}]
             }), 404)
-
-        videos = data['videos']
-        comment = data['comment']
-        images = data['images']
-        location = data['location']
-        createdBy = data['createdBy']
-
-        result = self.db.save(videos, comment, images, location, createdBy)
+            
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "incident_created": result,
+                "incident_created": data,
                 "message": "Created redflag record"
             }]
         }), 201)

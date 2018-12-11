@@ -4,7 +4,7 @@ import json
 import pytest
 
 from ... import create_app
-
+from ...database_config import test_init_db
 
 class TestRedflags(unittest.TestCase):
     """This class represents the test redflag case """
@@ -14,6 +14,7 @@ class TestRedflags(unittest.TestCase):
 
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client()
+        self.db = test_init_db()
         self.data = {
             "createdOn": "2018-11-29 05:21:37",
             "createdBy": "Norbert",
@@ -115,9 +116,30 @@ class TestRedflags(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Redflag with that id not found", str(response.data))
 
+    def test_editing_location(self):
+        """ Test if API is able to change location """
+
+        response = self.client.post(
+            'api/v1/incidents',
+            data=json.dumps(self.data),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status, 201)
+        patch_record = {
+            'location': 'Andela Uganda'
+        }
+        response = self.client.patch(
+            "/api/v1/incidents/1/location",
+            data=json.dumps(patch_record),
+            headers={"content-type": "application/json"})
+        self.assertEqual(response.status_code, 201)
+
     def tearDown(self):
-        """Teardown all initialized variables"""
-        pass
+        dbconn = self.db
+        curr = dbconn.cursor()
+        curr.execute("DROP TABLE incidents")
+        dbconn.commit()
+        
 
 if __name__ == '__main__':
     unittest.main()
