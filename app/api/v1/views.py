@@ -120,11 +120,11 @@ class MyRecords(Resource, IncidentsModel):
         return make_response(
             jsonify(
                 {
-                    "status": 200,
+                    "status": 404,
                     "error": "Redflag with that id not found"
                 }
             )
-        )
+        ), 404
 
     def delete(self, id):
         """ Allows you to delete a red-flag record """
@@ -159,4 +159,4 @@ class MyRecords(Resource, IncidentsModel):
                 "data": topatch,
                 "message": "Updated red-flag record location"
             }]
-        }), 201)
+        }), 200)

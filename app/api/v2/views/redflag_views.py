@@ -29,11 +29,18 @@ class MyIncidents(Resource, IncidentsModel):
                 "data": [{"message": "Ensure you have\
  filled all fields. i.e {} " .format(data)}]
             }), 404)
-            
+
+        comment = data['comment']
+        location = data['location']
+        images = data['images']
+        videos = data['videos']
+        createdBy = data['createdBy']
+
+        inciddata = self.db.save(comment, location, images, videos, createdBy)            
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "incident_created": data,
+                "incident_created": inciddata,
                 "message": "Created redflag record"
             }]
         }), 201)

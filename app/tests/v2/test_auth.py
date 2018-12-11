@@ -52,6 +52,7 @@ class TestAuthorization(unittest.TestCase):
         self.assertEqual(login_res.status_code, 200)
         self.assertTrue(result['access_token'])
 
+
     def test_user_registered(self):
         """ CHeck if users are already registered """
         res = self.client.post(
@@ -66,6 +67,7 @@ class TestAuthorization(unittest.TestCase):
         self.assertEqual(second_res.status_code, 202)
         result = json.loads(second_res.data.decode())
         self.assertEqual(result['message'], "User already exists, please login.")
+
 
     def test_unregistered_login(self):
         """ Check what happens when unregistered user tries to login """
@@ -86,7 +88,7 @@ class TestAuthorization(unittest.TestCase):
     def tearDown(self):
         dbconn = self.db
         curr = dbconn.cursor()
-        curr.execute("DROP TABLE users")
+        curr.execute("DROP TABLE IF EXISTS users CASCADE")
         dbconn.commit()
 
 

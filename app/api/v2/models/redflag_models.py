@@ -22,24 +22,16 @@ class IncidentsModel():
     def save(self, comment, location, images, videos, createdBy):
 
         incidentdata = {
-            "incidents_id": self.incidents_id,
-            "location": location,
             "comment": comment,
             "createdBy": createdBy,
-            "status": self.status,
             "createdOn": self.createdOn,
             "images": images,
-            "videos": videos,
-            "type": self.type
+            "incidents_id": self.incidents_id,
+            "location": location,
+            "status": self.status,
+            "type": self.type,
+            "videos": videos
         }
-
-        # validate_data = "missing data"
-
-        # for i in incidentdata:
-        #     if type(location) != str or type(comment) != str or type(self.status) != str:
-        #             return validate_data
-        #     elif type(self.incidents_id) != int or type(self.createdOn) != str:
-        #         return validate_data
 
         query = """INSERT INTO incidents (location, comment, createdBy,
                  status, createdOn, images, videos, type) VALUES (
@@ -76,14 +68,14 @@ class IncidentsModel():
             resp.append(datar)
         return resp
 
-    """ get one incident data"""
-    def get_one(self, incidents_id):
-        result = None
+    # """ get one incident data"""
+    # def get_one(self, incidents_id):
+    #     result = None
 
-        for instance in self.db:
-            if instance['incidents_id'] == id:
-                result = instance
-        return result
+    #     for instance in self.db:
+    #         if instance['incidents_id'] == id:
+    #             result = instance
+    #     return result
 
     def delete_redflag(self, id):
         dbconn = self.db

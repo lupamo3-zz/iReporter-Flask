@@ -137,7 +137,7 @@ class TestRedflags(unittest.TestCase):
     def tearDown(self):
         dbconn = self.db
         curr = dbconn.cursor()
-        curr.execute("DROP TABLE incidents")
+        curr.execute("DROP TABLE IF EXISTS incidents")
         dbconn.commit()
         
 

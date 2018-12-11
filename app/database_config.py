@@ -42,14 +42,8 @@ def create_test_tables():
     conn.commit()
 
 
-# def destroy_tables():
-#     drop1 = [
-#         """DROP TABLE IF EXISTS users CASCADE""",
-
-#         """DROP TABLE IF EXISTS incidents CASCADE"""
-#     ]
-#     queries = [drop1]
-#     return queries
+def destroy_tables():
+    pass
 
 
 def tables():
@@ -71,7 +65,7 @@ def tables():
         type character varying(20) NOT NULL,
         status character varying(100) NOT NULL,
         comment character varying(200) NOT NULL,
-        createdBy character varying(200) NOT NULL,
+        createdBy int NOT NULL REFERENCES Users(user_id) ,
         createdOn timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
         location character varying(200) NOT NULL,
         images character varying(200) NOT NULL,

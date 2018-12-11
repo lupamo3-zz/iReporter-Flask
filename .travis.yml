@@ -10,7 +10,7 @@ install:
 script:
   - nosetests --with-coverage --cover-package=app
   - py.test -v --cov-report term-missing --cov app
-  - python -m pytest --cov=./app
+  - pytest --cov=./app
 
 
 after_success: 
