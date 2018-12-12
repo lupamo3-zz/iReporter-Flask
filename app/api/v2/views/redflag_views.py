@@ -1,9 +1,8 @@
-from flask import jsonify, make_response, request
-from flask_restful import Resource, Api, abort, request
-from flask_jwt_extended import jwt_required, jwt_refresh_token_required
+from flask import jsonify, make_response
+from flask_restful import Resource, request
+from flask_jwt_extended import jwt_required
 
-from ..models.redflag_models import IncidentsModel
-from ....database_config import init_db
+from app.api.v2.models.redflag_models import IncidentsModel
 
 
 class MyIncidents(Resource, IncidentsModel):
@@ -17,7 +16,7 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-        
+
         if not data:
             return make_response(jsonify({
                 "status": 200,
@@ -36,11 +35,11 @@ class MyIncidents(Resource, IncidentsModel):
         videos = data['videos']
         createdBy = data['createdBy']
 
-        inciddata = self.db.save(comment, location, images, videos, createdBy)            
+        incid_data = self.db.save(comment, location, images, videos, createdBy)
         return make_response(jsonify({
             "status": 201,
             "data": [{
-                "incident_created": inciddata,
+                "incident_created": incid_data,
                 "message": "Created redflag record"
             }]
         }), 201)
@@ -75,12 +74,12 @@ class MyRecords(Resource, IncidentsModel):
     def get(self, id):
         """ Get a specific red-flag record """
         incidents = self.db.get_incidents()
-        for i in incidents:
-            if i['incidents_id'] == id:
+        for value in incidents:
+            if value['incidents_id'] == id:
 
                 return make_response(jsonify({
                     "status": 200,
-                    "data": i
+                    "data": value
                 }), 200)
 
         return make_response(
@@ -114,7 +113,7 @@ class MyRecords(Resource, IncidentsModel):
         }), 404)
 
 
-class MySpecificRecords(Resource, IncidentsModel): 
+class MySpecificRecords(Resource, IncidentsModel):
     """ Users can change the location of a record occurrence using Patch """
 
     def __init__(self):
@@ -137,7 +136,8 @@ class MySpecificRecords(Resource, IncidentsModel):
             "message": " Incident not found",
             "status": 404
         }), 404)
- 
+
+
 class MyCommentRecords(Resource, IncidentsModel):
     """ Edit the comment of a specific intervention record. """
 
@@ -147,10 +147,10 @@ class MyCommentRecords(Resource, IncidentsModel):
     @jwt_required
     def patch(self, id):
         """ Allows you to make changes to redflag commments"""
-        gett = self.db.get_incident_by_id(id=id)
+        get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
-        print(gett)
-        if gett:
+
+        if get_by_id:
             self.db.update_comment(data['comment'], id)
             return make_response(jsonify({
                 "New Comment": data['comment'],

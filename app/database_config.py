@@ -1,6 +1,5 @@
-import urllib.parse
-import psycopg2
 import os
+import psycopg2
 
 
 db_url = os.getenv('DATABASE_URL')
@@ -8,22 +7,31 @@ testdb_url = os.getenv('TESTDATABASE_URL')
 
 
 def connection(db_url):
+    """ Connection to the postgres database-server using psycopg2 module"""
     conn = psycopg2.connect(db_url)
     return conn
 
+
 def test_connection(testdb_url):
+    """ Connection to the test database-server using psycopg2 module"""
     conn = psycopg2.connect(testdb_url)
     return conn
 
+
 def init_db():
+    """ Initializes connection to the database """
     con = connection(db_url)
     return con
 
+
 def test_init_db():
+    """ Initializes connection to the test database """
     con = connection(testdb_url)
     return con
 
+
 def create_tables():
+    """ Create application database tables"""
     conn = connection(db_url)
     curr = conn.cursor()
     queries = tables()
@@ -32,7 +40,9 @@ def create_tables():
         curr.execute(query)
     conn.commit()
 
+
 def create_test_tables():
+    """ Create tables for testing """
     conn = connection(testdb_url)
     curr = conn.cursor()
     queries = tables()
@@ -43,10 +53,12 @@ def create_test_tables():
 
 
 def destroy_tables():
+    """ Drop database tables """
     pass
 
 
 def tables():
+    """ Create collumns on the database tables """
     userstables = """CREATE TABLE IF NOT EXISTS Users (
         user_id serial PRIMARY KEY NOT NULL,
         firstname character varying(50) NOT NULL,
@@ -74,4 +86,3 @@ def tables():
 
     queries = [userstables, incidentstables]
     return queries
-
