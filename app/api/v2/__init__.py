@@ -1,13 +1,13 @@
-from .views.redflag_views import (
-        MyRecords, MyIncidents, MySpecificRecords,
-        MyCommentRecords
-) 
-from .views.user_views import MyUsers, MyAdmin
-from .views.auth import SignUp, SignIn
-
-
 from flask_restful import Resource, Api
 from flask import Blueprint
+
+from app.api.v2.views.redflag_views import (
+    MyRecords, MyIncidents, MySpecificRecords,
+    MyCommentRecords
+)
+from app.api.v2.views.user_views import MyUsers, MyAdmin
+from app.api.v2.views.authentication import SignUp, SignIn
+
 
 version_2 = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 api = Api(version_2)
