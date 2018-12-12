@@ -34,23 +34,21 @@ class SignUp(Resource, UsersModel):
         password = generate_password_hash(data['password'])
 
         try:
-            access_token = create_access_token(identity=data['username'])
             user = self.db.get_username_user(username)
             if user:
                 return make_response(
                     jsonify({
                         "message":
-                        "User{} already exists".format(data['username'])
+                        "User {} already exists".format(data['username'])
                     }), 404)
+            
             sign_up = self.db.save(firstname, lastname, othernames, username,
                                    email, phonenumber, password)
 
             return make_response(jsonify({
                 "status": 201,
-
-                "access_token": access_token,
                 "message":
-                "Created {} successfuly, you can now login ".format(username)
+                "Created {} successfuly, you can now login ".format(username),
             }), 201)
         except:
             return make_response(jsonify({
@@ -74,7 +72,7 @@ class SignIn(Resource, UsersModel):
             }), 200)
 
         username = login_data['username']
-        password = login_data['password']
+        password = generate_password_hash(login_data['password'])
         user = self.db.get_username_user(username)
 
         if not user:
@@ -85,12 +83,12 @@ class SignIn(Resource, UsersModel):
             }))
 
         if user:
-            if check_password_hash(login_data['password'], password):
+            if check_password_hash(user[9], login_data['password']):
 
                 access_token = create_access_token(
                     identity=login_data['username'],
                     expires_delta=False
-                    )
+                )
                 return make_response(jsonify({
                     "access_token": access_token,
                     "message": "Logged in as {}".format(login_data['username'])
@@ -98,5 +96,5 @@ class SignIn(Resource, UsersModel):
 
             return make_response(jsonify({
                 "status": 400,
-                "message": "Wrong credentials"
+                "message": "Wrong credentials, check password and username!"
             }))
