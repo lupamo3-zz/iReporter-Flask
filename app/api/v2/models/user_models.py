@@ -15,7 +15,6 @@ class UsersModel():
     def __init__(self):
         self.db = test_init_db()
         self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        self.isAdmin = "isAdmin"
 
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
@@ -29,15 +28,14 @@ class UsersModel():
             "email": email,
             "phonenumber": phonenumber,
             "registered": self.registered,
-            "isAdmin": False or True,
             "password": password
         }
 
         inquire = """INSERT INTO users (firstname, lastname,
                  othernames, username, email, phonenumber, registered,
-                  isAdmin, password) VALUES (
+                  password) VALUES (
                   %(firstname)s, %(lastname)s, %(othernames)s, %(username)s,
-                  %(email)s, %(phonenumber)s, %(registered)s, %(isAdmin)s,
+                  %(email)s, %(phonenumber)s, %(registered)s,
                    %(password)s)"""
         currsor = self.db.cursor()
         currsor.execute(inquire, user_data)

@@ -69,7 +69,7 @@ def tables():
         email character varying(50) UNIQUE,
         phonenumber character varying(50) UNIQUE,
         registered timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
-        isAdmin boolean NOT NULL,
+        isAdmin boolean NOT NULL DEFAULT FALSE,
         password character varying(1250) NOT NULL
     )"""
 
