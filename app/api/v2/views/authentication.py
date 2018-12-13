@@ -74,12 +74,20 @@ class SignIn(Resource, UsersModel):
 
         if user:
             if check_password_hash(user[9], login_data['password']):
-
+                expires = datetime.timedelta(hours=1)
                 access_token = create_access_token(
                     identity=login_data['username'],
-                    expires_delta=False
+                    expires_delta=expires
                 )
             return {"data": [{"Logged in as {}".format(login_data['username'])}]
                     }, 200
 
         return {"data": [{"message": "Wrong credentials, check password!"}]}, 401
+
+        @jwt.expired_token_loader
+    def my_expired_token_callback():
+        return jsonify({
+            'status': 401,
+            'sub_status': 42,
+            'msg': 'The token has expired'
+        }), 401
