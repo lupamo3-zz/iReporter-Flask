@@ -79,11 +79,11 @@ class SignIn(Resource, UsersModel):
                     identity=login_data['username'],
                     expires_delta=False
                 )
-            return {
-                "data":
-                    "Logged in as {}".format(login_data['username']),
-                    "access_token": access_token
+                return {
+                    "data":
+                        "Logged in as {}".format(login_data['username']),
+                        "access_token": access_token
 
-            }, 200
+                }, 200
 
         return {"data": [{"message": "Wrong credentials, check password!"}]}, 401
