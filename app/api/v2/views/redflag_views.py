@@ -18,10 +18,10 @@ class MyIncidents(Resource, IncidentsModel):
         data = request.get_json(force=True)
 
         if not data:
-            return {"data": {"message": "No data input!"}}, 200
+            return {"data": {"message": "No data input!"}}, 400
         elif not data['location'] or not data["comment"]:
             return {"data": {"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}}, 404
+ filled all fields. i.e {} " .format(data)}}, 400
 
         comment = data['comment']
         location = data['location']
