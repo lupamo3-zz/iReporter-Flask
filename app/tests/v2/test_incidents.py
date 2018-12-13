@@ -173,14 +173,12 @@ class TestRedflags(unittest.TestCase):
         patch_record = {
             'location': 'Andela Uganda'
         }
-        print(patch_record)
         response = self.client.patch(
             "/api/v2/incidents/1/location",
             data=json.dumps(patch_record),
             headers={"content-type": "application/json",
                      'Authorization': 'Bearer ' + self.auth_token})
         data = json.loads(response.data)
-        # self.assertEqual(data["location"], "Andela Uganda")
         self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
