@@ -29,7 +29,7 @@ class IncidentsModel():
         }
         validate_data = "missing data"
 
-        for i in incidentdata:
+        for key in incidentdata:
             if type(self.status) != str:
                 return validate_data
             elif type(self.userid()) != int or type(self.createdOn) != str:
@@ -38,7 +38,7 @@ class IncidentsModel():
             return "keyerror"
 
         whitespaces = "white space"
-        for k in incidentdata:
+        for key in incidentdata:
             if createdBy.isspace() or location.isspace() or comment.isspace():
                 return whitespaces
         self.db.append(incidentdata)

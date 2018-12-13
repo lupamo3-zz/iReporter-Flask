@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_jwt_extended import create_access_token
 
-from ..models.user_models import UsersModel
+from app.api.v2.models.user_models import UsersModel
 
 
 class SignUp(Resource, UsersModel):
@@ -43,6 +43,7 @@ class SignUp(Resource, UsersModel):
             return {"data":
                     [{"message":
                       "User {} created, now login ".format(username)}]}, 201
+
         except:
             return {"data":
                     [{"Message": "User creation not successful"}]}, 400
@@ -74,20 +75,15 @@ class SignIn(Resource, UsersModel):
 
         if user:
             if check_password_hash(user[9], login_data['password']):
-                expires = datetime.timedelta(hours=1)
                 access_token = create_access_token(
                     identity=login_data['username'],
-                    expires_delta=expires
+                    expires_delta=False
                 )
-            return {"data": [{"Logged in as {}".format(login_data['username'])}]
-                    }, 200
+            return {
+                "data":
+                    "Logged in as {}".format(login_data['username']),
+                    "access_token": access_token
+
+            }, 200
 
         return {"data": [{"message": "Wrong credentials, check password!"}]}, 401
-
-        @jwt.expired_token_loader
-    def my_expired_token_callback():
-        return jsonify({
-            'status': 401,
-            'sub_status': 42,
-            'msg': 'The token has expired'
-        }), 401

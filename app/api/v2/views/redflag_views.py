@@ -67,26 +67,22 @@ class MyRecords(Resource, IncidentsModel):
 
         return {"error": ["Incident with that id not found"]}, 404
           
-    # @jwt_required
-    # def delete(self, id):
-    #     """ Allows you to delete a red-flag record """
-    #     deleting = self.db.delete_redflag(id)
+    @jwt_required
+    def delete(self, id):
+        """ Allows you to delete a red-flag record """
+        incidents = self.db.get_incident_by_id(id)
+        if not incidents:
+            return {"error": ["Incident with that id not found"]}, 404
 
-    #     if deleting:
-    #         return make_response(jsonify({
-    #             'status': 200,
-    #             "data": [{
-    #                 "id": id,
-    #                 "message": "red-flag record has been deleted"
-    #             }]
-    #         }))
-    #     return make_response(jsonify({
-    #         'status': 200,
-    #         "data": [{
-    #             "id": id,
-    #             'message': 'Redflag not found'
-    #         }]
-    #     }), 404)
+        deleting = self.db.delete_redflag(id)
+
+        if deleting:
+            return make_response(jsonify({
+                "data": [{
+                    "id": id,
+                    "message": deleting
+                }]
+            }), 200)
 
 
 class MySpecificRecords(Resource, IncidentsModel):

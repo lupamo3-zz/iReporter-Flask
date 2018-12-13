@@ -174,7 +174,7 @@ class TestRedflags(unittest.TestCase):
             headers={"content-type": "application/json",
                      'Authorization': 'Bearer ' + self.auth_token})
         data = json.loads(response.data)
-        self.assertEqual(data["New Location"], "Andela Uganda")
+        self.assertEqual(data["Location"], "Andela Uganda")
 
     def tearDown(self):
         dbconn = self.db

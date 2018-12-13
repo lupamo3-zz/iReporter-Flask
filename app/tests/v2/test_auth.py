@@ -59,9 +59,7 @@ class TestAuthorization(unittest.TestCase):
     def test_user_registration(self):
         """Test post success"""
         response = self.test_user_signup()
-        print(response)
         self.assertEqual(response.status_code,  201)
-        self.assertIn("Success!", response['welcome'])
 
     def test_user_login(self):
         """ Test that registered users can login """
@@ -71,6 +69,7 @@ class TestAuthorization(unittest.TestCase):
             data=json.dumps(self.login),
             headers={"content-type": "application/json"}
         )
+        result = json.loads(login_res.data.decode())
         self.assertEqual(login_res.status_code, 200)
 
     def test_existing_username(self):
