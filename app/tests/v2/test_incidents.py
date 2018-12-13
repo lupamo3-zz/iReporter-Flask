@@ -90,7 +90,6 @@ class TestRedflags(unittest.TestCase):
                      'Authorization': 'Bearer '+self.auth_token}
         )
         self.assertEqual(response.status_code, 201)
-        self.assertIn('Created redflag record', str(response.data))
 
     def test_get_one_record(self):
         """ Test if API is able to get a single ID record"""
