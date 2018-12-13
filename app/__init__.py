@@ -8,7 +8,7 @@ from flask_jwt_extended import JWTManager
 
 # # local  imports
 from instance.config import app_config
-from .database_config import create_tables, create_test_tables
+from app.database_config import create_tables, create_test_tables
 
 
 def create_app(config_name):

@@ -18,16 +18,10 @@ class MyIncidents(Resource, IncidentsModel):
         data = request.get_json(force=True)
 
         if not data:
-            return make_response(jsonify({
-                "status": 200,
-                "message": "No data input"
-            }), 404)
+            return {"data": {"message": "No data input!"}}, 400
         elif not data['location'] or not data["comment"]:
-            return make_response(jsonify({
-                "status": 404,
-                "data": [{"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}]
-            }), 404)
+            return {"data": {"message": "Ensure you have\
+ filled all fields. i.e {} " .format(data)}}, 400
 
         comment = data['comment']
         location = data['location']
@@ -36,13 +30,8 @@ class MyIncidents(Resource, IncidentsModel):
         createdBy = data['createdBy']
 
         incid_data = self.db.save(comment, location, images, videos, createdBy)
-        return make_response(jsonify({
-            "status": 201,
-            "data": [{
-                "incident_created": incid_data,
-                "message": "Created redflag record"
-            }]
-        }), 201)
+        return {"data": [{"incident_created": incid_data,
+                          "message": "Created redflag record"}]}, 201
 
     @jwt_required
     def get(self):
@@ -52,14 +41,10 @@ class MyIncidents(Resource, IncidentsModel):
         if fetch_all:
 
             return make_response(jsonify({
-                "status": 200,
                 "data": fetch_all
             }), 200)
 
-        return make_response(jsonify({
-            "status": 404,
-            "error": "No Red-flag found"
-        }))
+        return {"error": ["No Incidence found"]}, 404
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -73,44 +58,31 @@ class MyRecords(Resource, IncidentsModel):
     @jwt_required
     def get(self, id):
         """ Get a specific red-flag record """
-        incidents = self.db.get_incidents()
-        for value in incidents:
-            if value['incidents_id'] == id:
+        incidents = self.db.get_incident_by_id(id)
+        if incidents:
 
                 return make_response(jsonify({
-                    "status": 200,
-                    "data": value
+                    "data": incidents
                 }), 200)
 
-        return make_response(
-            jsonify(
-                {
-                    "status": 404,
-                    "error": "Redflag with that id not found"
-                }
-            ), 404
-        )
-
+        return {"error": ["Incident with that id not found"]}, 404
+          
     @jwt_required
     def delete(self, id):
         """ Allows you to delete a red-flag record """
+        incidents = self.db.get_incident_by_id(id)
+        if not incidents:
+            return {"error": ["Incident with that id not found"]}, 404
+
         deleting = self.db.delete_redflag(id)
 
         if deleting:
             return make_response(jsonify({
-                'status': 200,
                 "data": [{
                     "id": id,
-                    "message": "red-flag record has been deleted"
+                    "message": deleting
                 }]
-            }))
-        return make_response(jsonify({
-            'status': 200,
-            "data": [{
-                "id": id,
-                'message': 'Redflag not found'
-            }]
-        }), 404)
+            }), 200)
 
 
 class MySpecificRecords(Resource, IncidentsModel):
@@ -122,20 +94,16 @@ class MySpecificRecords(Resource, IncidentsModel):
     @jwt_required
     def patch(self, id):
         """ Makes the location editable by user """
-        gett = self.db.get_incident_by_id(id=id)
+        get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
-        print(gett)
-        if gett:
+
+        if get_by_id:
             self.db.update_location(data['location'], id)
-            return make_response(jsonify({
+            return {"data": [{
                 "New Location": data['location'],
                 "message": "Updated location successfully",
-                "status": 200
-            }))
-        return make_response(jsonify({
-            "message": " Incident not found",
-            "status": 404
-        }), 404)
+            }]}, 200
+        return {"data": [{"message": " Incident not found"}]}, 404
 
 
 class MyCommentRecords(Resource, IncidentsModel):
@@ -152,12 +120,6 @@ class MyCommentRecords(Resource, IncidentsModel):
 
         if get_by_id:
             self.db.update_comment(data['comment'], id)
-            return make_response(jsonify({
-                "New Comment": data['comment'],
-                "message": "Updated comment successfully",
-                "status": 200
-            }))
-        return make_response(jsonify({
-            "message": " Incident not found",
-            "status": 404
-        }), 404)
+            return {"data": [{"New Comment": data['comment'],
+                              "message": "Updated comment successfully"}]}, 200
+        return {"data": [{"message": " Incident not found"}]}, 404

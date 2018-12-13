@@ -50,6 +50,7 @@ def create_test_tables():
     for query in queries:
         curr.execute(query)
     conn.commit()
+    curr.close()
 
 
 def destroy_tables():

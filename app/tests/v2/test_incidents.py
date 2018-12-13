@@ -16,15 +16,31 @@ class TestRedflags(unittest.TestCase):
         self.app = create_app(config_name="testing")
         self.client = self.app.test_client()
         self.db = test_init_db()
+
         self.data = {
-            "createdOn": "2018-11-29 05:21:37",
-            "createdBy": "Norbert",
-            "location": "Mount Sinai",
-            "status": "There is a bush on fire",
-            "comment": "How hot can it be?",
-            "id": 1
+            "comment": "I am doing it",
+            "createdBy": 1,
+            "createdOn": "2018-12-12 15:45:07",
+            "images": "images",
+            "location": "naironi",
+            "status": "Draft",
+            "type": "Redflags",
+            "videos": "videos"
         }
 
+        self.no_input = {
+        }
+
+        self.auth_signup = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "R",
+            "username": "Andela",
+            "email": "andela@andela.Kenya",
+            "phonenumber": "0724716026",
+            "password": "Eatlivecode"
+        }
+     
         self.no_comment = {
             "createdOn": "2018-11-29 05:21:37",
             "createdBy": "Norbert",
@@ -34,24 +50,44 @@ class TestRedflags(unittest.TestCase):
             "id": 1
         }
 
-        self.no_input = {
+        self.token_login = {
+            "username": "Andela",
+            "password": "Eatlivecode"
         }
+
+        res = self.client.post(
+            '/api/v2/signup',
+            data=json.dumps(self.auth_signup),
+            headers={"content-type": "application/json"}
+        )
+        login_res = self.client.post(
+            '/api/v2/login',
+            data=json.dumps(self.token_login),
+            headers={"content-type": "application/json"}
+        )
+        response = json.loads(login_res.data)
+        self.auth_token = response["access_token"]
 
     def test_get_all_records(self):
         """ Test if API endpoint is able to get all records correctly """
-
+        response = self.client.post(
+            '/api/v2/incidents',
+            data=json.dumps(self.data),
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token}
+        )
         response = self.client.get(
             '/api/v2/incidents',
-            data=self.data)
+            headers={'authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(response.status_code, 200)
-        self.assertIn('status', str(response.data))
 
     def test_creation_of_records(self):
         """ Test if API endpoint can create a redflag (POST)"""
         response = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.data),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer '+self.auth_token}
         )
         self.assertEqual(response.status_code, 201)
         self.assertIn('Created redflag record', str(response.data))
@@ -61,11 +97,13 @@ class TestRedflags(unittest.TestCase):
         response = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.data),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token}
         )
         self.assertEqual(response.status_code, 201)
-        response = self.client.get("/api/v2/incidents/1")
-        self.assertIn("Redflag with that id not found", str(response.data))
+        response = self.client.get(
+            "/api/v2/incidents/1",
+            headers={'Authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(response.status_code, 200)
 
     def test_records_deletion(self):
@@ -73,10 +111,13 @@ class TestRedflags(unittest.TestCase):
         rv = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.data),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token}
         )
         self.assertEqual(rv.status_code, 201)
-        res = self.client.delete('/api/v2/incidents/1')
+        res = self.client.delete(
+            '/api/v2/incidents/1',
+            headers={'Authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(res.status_code, 200)
 
     def test_record_without_comment(self):
@@ -84,56 +125,61 @@ class TestRedflags(unittest.TestCase):
         response = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.no_comment),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'authorization': 'Bearer ' + self.auth_token}
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_creation_record_empty_fileds(self):
         """ Test if API can post with all fields empty"""
         response = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.no_input),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'authorization': 'Bearer ' + self.auth_token}
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
 
     def test_no_record_to_delete(self):
         """Test if API can delete existing records """
         rv = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.data),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'authorization': 'Bearer ' + self.auth_token}
         )
         self.assertEqual(rv.status_code, 201)
-        res = self.client.delete('/api/v2/incidents/20')
+        res = self.client.delete(
+            '/api/v2/incidents/1',
+            headers={'authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(res.status_code, 200)
-        self.assertIn("Redflag not found", str(res.data))
 
     def test_none_existent_record(self):
         """ Test if API is able to get non-existent record"""
         response = self.client.get(
-            '/api/v2/incidents/200'
+            '/api/v2/incidents/200',
+            headers={'Authorization': 'Bearer ' + self.auth_token}
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("Redflag with that id not found", str(response.data))
+        self.assertEqual(response.status_code, 404)
 
     def test_editing_location(self):
         """ Test if API is able to change location """
-
         response = self.client.post(
             'api/v2/incidents',
             data=json.dumps(self.data),
-            content_type="application/json"
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token}
         )
-        self.assertEqual(response.status, 201)
         patch_record = {
             'location': 'Andela Uganda'
         }
         response = self.client.patch(
-            "/api/v2/incidents/2/location",
+            "/api/v2/incidents/1/location",
             data=json.dumps(patch_record),
-            headers={"content-type": "application/json"})
-        self.assertEqual(response.status_code, 201)
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token})
+        data = json.loads(response.data)
+        self.assertEqual(response.status_code, 200)
 
     def tearDown(self):
         dbconn = self.db

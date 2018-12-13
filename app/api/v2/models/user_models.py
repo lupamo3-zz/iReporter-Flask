@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.database_config import init_db
+from app.database_config import test_init_db
 
 
 def get_timestamp():
@@ -13,7 +13,7 @@ class UsersModel():
     """ Docstring for my users model """
 
     def __init__(self):
-        self.db = init_db()
+        self.db = test_init_db()
         self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
         self.isAdmin = "isAdmin"
 
@@ -21,7 +21,7 @@ class UsersModel():
     def save(self, firstname, lastname, othernames, username, email,
              phonenumber, password):
 
-        userdata = {
+        user_data = {
             "firstname": firstname,
             "lastname": lastname,
             "othernames": othernames,
@@ -39,26 +39,25 @@ class UsersModel():
                   %(firstname)s, %(lastname)s, %(othernames)s, %(username)s,
                   %(email)s, %(phonenumber)s, %(registered)s, %(isAdmin)s,
                    %(password)s)"""
-        curr = self.db.cursor()
-        curr.execute(inquire, userdata)
+        currsor = self.db.cursor()
+        currsor.execute(inquire, user_data)
         self.db.commit()
-        return userdata
+        return user_data
 
     """get all the users """
     def get_users(self):
 
-        user_conn = self.db
-        curr = user_conn.cursor()
-        curr.execute("""SELECT user_id, firstname, lastname,
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT user_id, firstname, lastname,
                      othernames, username, email, phonenumber, registered,
                      isAdmin, password FROM users""")
-        user_info = curr.fetchall()
+        user_info = currsor.fetchall()
         response = []
 
         for key, userrecords in enumerate(user_info):
-            user_id, firstname, lastname, othernames, username, email,
-            phonenumber, registered, isAdmin, password = userrecords
-            userdata = dict(
+            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin, password = userrecords
+            user_data = dict(
                 user_id=int(user_id),
                 firstname=firstname,
                 lastname=lastname,
@@ -70,42 +69,43 @@ class UsersModel():
                 isAdmin=isAdmin,
                 password=password
             )
-            response.append(userdata)
+            response.append(user_data)
         return response
+        print(response)
 
     """ get one user's data"""
     def get_user_id(self, id):
         """ Get a user by ID """
-        user_conn = self.db
-        curr = user_conn.cursor()
-        curr.execute("""SELECT * FROM users WHERE user_id=%s""", (id, ))
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE user_id=%s""", (id, ))
 
-        selectuser = curr.fetchone()
+        select_user = currsor.fetchone()
 
         user_conn.commit()
 
-        if selectuser:
-            return selectuser
+        if select_user:
+            return select_user
 
     def delete_user(self, user_id):
-        user_conn = self.db
-        curr = user_conn.cursor()
-        curr.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
-        user_conn.commit()
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
+        user_connection.commit()
 
     def get_username_user(self, username):
         """ Get user by username """
-        user_conn = self.db
-        curr = user_conn.cursor()
-        curr.execute("""SELECT * FROM users WHERE username=%s""", (username, ))
-        selectuser = curr.fetchone()
-        user_conn.commit()
-        if selectuser:
-            return selectuser
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE username=%s""", (username, ))
+        select_user = currsor.fetchone()
+        user_connection.commit()
+        if select_user:
+            return select_user
 
     def login_user(self):
-        user_conn = self.db
-        curr = user_conn.cursor()
+        user_connection = self.db
+        currsor = user_connection.cursor()
         username = request.get_json()['username']
-        curr.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
-        user_conn.commit
+        currsor.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
+        user_connection.commit

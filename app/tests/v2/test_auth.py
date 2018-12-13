@@ -29,79 +29,87 @@ class TestAuthorization(unittest.TestCase):
             "username": "Andela1",
             "password": "Eatlivecode"
         }
-
+        self.invalid = {
+            "username": "Andela1",
+            "password": "Eatlivecod"
+        }
+        self.unregistered = {
+            'username': 'ramsaybolton',
+            'password': 'dark'
+        }
+        self.duplicate = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "R",
+            "username": "Andela1",
+            "email": "andela@andela.andela",
+            "phonenumber": "0717245777",
+            "password": "Eatlivecode"
+        }
 
     def test_user_signup(self):
         """Test to see user signing up"""
         res = self.client.post(
             '/api/v2/signup',
             data=json.dumps(self.auth),
-            content_type="application/json"
+            headers={"content-type": "application/json"}
         )
-        response = json.loads(res.data)
-        self.assertEqual(res.status_code,  201)
-        self.assertIn("Success!", response['welcome'])
+        return res
+
+    def test_user_registration(self):
+        """Test post success"""
+        response = self.test_user_signup()
+        self.assertEqual(response.status_code,  201)
 
     def test_user_login(self):
         """ Test that registered users can login """
-        res = self.client.post(
-            '/api/v2/signup',
-            data=json.dumps(self.auth),
-            content_type="application/json"
-        )
-        self.assertEqual(res.status_code, 201)
+        self.test_user_signup()
         login_res = self.client.post(
             '/api/v2/login',
             data=json.dumps(self.login),
-            content_type="application/json"
+            headers={"content-type": "application/json"}
         )
         result = json.loads(login_res.data.decode())
-        self.assertEqual(result['message'], "You logged in successfully.")
         self.assertEqual(login_res.status_code, 200)
-        self.assertTrue(result['access_token'])
 
-    def test_user_registered(self):
+    def test_existing_username(self):
         """ CHeck if users are already registered """
-        req = self.client.post(
-            '/api/v2/signup',
-            data=json.dumps(self.auth),
-            content_type="application/json"
-        )
-        res = req.get_json()
-        # print("check errors", type(res))
-        print(res)
-        self.assertEqual(res.status_code, 404)
+        self.test_user_signup()
         second_res = res = self.client.post(
             '/api/v2/signup',
-            data=json.dumps(self.auth),
-            content_type="application/json"
+            data=json.dumps(self.duplicate),
+            headers={"content-type": "application/json"}
         )
-        self.assertEqual(second_res.status_code, 202)
+        self.assertEqual(second_res.status_code, 400)
         result = json.loads(second_res.data.decode())
-        self.assertEqual(result['message'],
-                         "User already exists, please login.")
 
-    def test_unregistered_login(self):
+    def test_unregistered_username(self):
         """ Check what happens when unregistered user tries to login """
-        unregistered = {
-            'username': 'ramsaybolton',
-            'password': 'dark'
-        }
         res = self.client.post(
             '/api/v2/login',
-            data=unregistered,
-            content_type="application/json"
+            data=json.dumps(self.unregistered),
+            headers={"content-type": "application/json"}
         )
         result = json.loads(res.data.decode())
 
         self.assertEqual(res.status_code, 401)
-        self.assertEqual(result['message'], "Wrong credentials")
+
+    def test_incorrect_login_details(self):
+        """ Check user attempts to login with incorrect details """
+        res = self.client.post(
+            '/api/v2/login',
+            data=json.dumps(self.invalid),
+            headers={"content-type": "application/json"}
+        )
+        result = json.loads(res.data.decode())
+
+        self.assertEqual(res.status_code, 401)
 
     def tearDown(self):
 
         dbconn = self.db
         curr = dbconn.cursor()
-        curr.execute("DROP TABLE IF EXISTS users CASCADE")
+        curr.execute("DROP TABLE IF EXISTS users CASCADE ")
         dbconn.commit()
 
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app.database_config import init_db
+from app.database_config import test_init_db
 
 
 def get_timestamp():
@@ -11,7 +11,7 @@ class IncidentsModel():
     """ Docstring for my incidents model """
 
     def __init__(self):
-        self.db = init_db()
+        self.db = test_init_db()
         self.status = "Draft"
         self.createdOn = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
         self.type = "Redflags"
@@ -20,7 +20,7 @@ class IncidentsModel():
 
     def save(self, comment, location, images, videos, createdBy):
 
-        incidentdata = {
+        incident_data = {
             "comment": comment,
             "createdBy": createdBy,
             "createdOn": self.createdOn,
@@ -35,26 +35,26 @@ class IncidentsModel():
                  status, createdOn, images, videos, type) VALUES (
                   %(location)s, %(comment)s, %(createdBy)s, %(status)s,
                    %(createdOn)s, %(images)s, %(videos)s, %(type)s)"""
-        curr = self.db.cursor()
-        curr.execute(query, incidentdata)
+
+        currsor = self.db.cursor()
+        currsor.execute(query, incident_data)
         self.db.commit()
-        return incidentdata
+        return incident_data
 
     """get all the incidents """
 
     def get_incidents(self):
 
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute("""SELECT incidents_id, type, status, comment,
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute("""SELECT incidents_id, type, status, comment,
                  createdBy, createdOn, location,  images, videos
                   FROM incidents""")
-        data = curr.fetchall()
-        resp = []
+        data = currsor.fetchall()
+        response = []
 
         for key, records in enumerate(data):
-            incidents_id, type, status, comment, createdBy, createdOn,
-            location, images, videos = records
+            incidents_id, type, status, comment, createdBy, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
                 type=type,
@@ -66,52 +66,53 @@ class IncidentsModel():
                 images=images,
                 videos=videos
             )
-            resp.append(datar)
-        return resp
+            response.append(datar)
+        return response
 
     def delete_redflag(self, id):
         """ To delete redflag and incident details """
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
-        dbconn.commit()
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
+        db_connection.commit()
+        return "Incident record has been deleted"
 
     def edit_redflags(self, incidents_id, createdBy):
         """ Query to edit redflag details """
-        sql = """ UPDATE incidents
+        query = """ UPDATE incidents
                 SET createdBy = %s
                 WHERE incidents_id = %s"""
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute(sql, (createdBy, incidents_id))
-        dbconn.commit()
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(query, (createdBy, incidents_id))
+        db_connection.commit()
 
     def get_incident_by_id(self, id):
         """ Get redflag or interevention details by id"""
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        incident = curr.fetchall()
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        incident = currsor.fetchall()
         return incident
 
     def update_location(self, location, incidents_id):
         """ Query to update user location details """
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute(
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
             """ UPDATE Incidents
             SET location = %s
             WHERE incidents_id=%s""", (location, incidents_id)
         )
-        dbconn.commit()
+        db_connection.commit()
 
     def update_comment(self, comment, incidents_id):
         """ Query to update user comment details """
-        dbconn = self.db
-        curr = dbconn.cursor()
-        curr.execute(
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
             """ UPDATE Incidents
             SET comment = %s
             WHERE incidents_id=%s""", (comment, incidents_id)
         )
-        dbconn.commit()
+        db_connection.commit()

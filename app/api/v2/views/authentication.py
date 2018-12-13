@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from flask_jwt_extended import create_access_token
 
-from ..models.user_models import UsersModel
+from app.api.v2.models.user_models import UsersModel
 
 
 class SignUp(Resource, UsersModel):
@@ -20,10 +20,7 @@ class SignUp(Resource, UsersModel):
         """ Unregistered User sign up """
         data = request.get_json(force=True)
         if not data:
-            return make_response(jsonify({
-                "status": 200,
-                "message": "Kindly input user information"
-            }), 200)
+            return {"data": [{"message": "Kindly input user info"}]}, 200
 
         firstname = data['firstname']
         lastname = data['lastname']
@@ -36,24 +33,20 @@ class SignUp(Resource, UsersModel):
         try:
             user = self.db.get_username_user(username)
             if user:
-                return make_response(
-                    jsonify({
-                        "message":
-                        "User {} already exists".format(data['username'])
-                    }), 404)
-            
+                return {"data":
+                        [{"message":
+                          "User {} already exists".format(data['username'])}]}, 400
+
             sign_up = self.db.save(firstname, lastname, othernames, username,
                                    email, phonenumber, password)
 
-            return make_response(jsonify({
-                "status": 201,
-                "message":
-                "Created {} successfuly, you can now login ".format(username),
-            }), 201)
+            return {"data":
+                    [{"message":
+                      "User {} created, now login ".format(username)}]}, 201
+
         except:
-            return make_response(jsonify({
-                "message": "User creation not successful"
-            }), 400)
+            return {"data":
+                    [{"Message": "User creation not successful"}]}, 400
 
 
 class SignIn(Resource, UsersModel):
@@ -66,35 +59,31 @@ class SignIn(Resource, UsersModel):
         """ Registered user login and validation """
         login_data = request.get_json(force=True)
         if not login_data:
-            return make_response(jsonify({
-                "status": 200,
-                "message": "Kindly input Username and Password details"
-            }), 200)
+            return {"data":
+                    [{"Message":
+                      "Kindly input Username and Password details"}]}, 200
 
         username = login_data['username']
         password = generate_password_hash(login_data['password'])
         user = self.db.get_username_user(username)
 
         if not user:
-            return make_response(jsonify({
-                'message': 'User {} doesn\'t exist, Kindly register'.format(
-                    login_data['username']
-                )
-            }))
+            return {"data":
+                    [{"Message":
+                      'User {} doesn\'t exist, Kindly register'.format(
+                          login_data['username'])}]}, 401
 
         if user:
             if check_password_hash(user[9], login_data['password']):
-
                 access_token = create_access_token(
                     identity=login_data['username'],
                     expires_delta=False
                 )
-                return make_response(jsonify({
-                    "access_token": access_token,
-                    "message": "Logged in as {}".format(login_data['username'])
-                }), 200)
+            return {
+                "data":
+                    "Logged in as {}".format(login_data['username']),
+                    "access_token": access_token
 
-            return make_response(jsonify({
-                "status": 400,
-                "message": "Wrong credentials, check password and username!"
-            }))
+            }, 200
+
+        return {"data": [{"message": "Wrong credentials, check password!"}]}, 401
