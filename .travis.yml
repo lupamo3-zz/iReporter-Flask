@@ -7,15 +7,6 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 
-script:
-  - nosetests --with-coverage --cover-package=app
-  - py.test -v --cov-report term-missing --cov app
-  - pytest --cov=./app
-
-
-after_success: 
-  - coveralls
-
 services:
  - postgresql 
 
@@ -23,5 +14,14 @@ addons:
  postgresql: "9.5"
 
 before_script:
- - psql -c "CREATE DATABASE ireporterflask;" -U postgres
+ - psql -c "CREATE DATABASE ireporter_test;" -U postgres
  - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres;" -U postgres
+
+ script:
+  - nosetests --with-coverage --cover-package=app
+  - py.test -v --cov-report term-missing --cov app
+  - pytest --cov=./app
+
+
+after_success: 
+  - coveralls
