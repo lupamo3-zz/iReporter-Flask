@@ -82,7 +82,7 @@ class UsersModel():
 
         select_user = currsor.fetchone()
 
-        user_conn.commit()
+        user_connection.commit()
 
         if select_user:
             return select_user
