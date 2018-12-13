@@ -24,10 +24,7 @@ class MyUsers(Resource, UsersModel):
                 "data": all_users
             }), 200)
 
-        return make_response(jsonify({
-            "status": 404,
-            "error": "No Users found"
-        }))
+        return {"data": [{"error": "No Users found"}]}, 404
 
 
 class MyAdmin(Resource, UsersModel):
@@ -38,26 +35,26 @@ class MyAdmin(Resource, UsersModel):
     def __init__(self):
         self.db = UsersModel()
 
-    @jwt_required
-    def delete(self, id):
+    # @jwt_required
+    # def delete(self, id):
 
-        delete_user = self.db.delete_user(id)
+    #     delete_user = self.db.delete_user(id)
 
-        if delete_user:
-            return make_response(jsonify({
-                'status': 200,
-                "data": [{
-                    "id": id,
-                    "message": "User with that record has been deleted"
-                }]
-            }))
-        return make_response(jsonify({
-            'status': 200,
-            "data": [{
-                "id": id,
-                'message': 'User not found'
-            }]
-        }), 404)
+    #     if delete_user:
+    #         return make_response(jsonify({
+    #             'status': 200,
+    #             "data": [{
+    #                 "id": id,
+    #                 "message": "User with that record has been deleted"
+    #             }]
+    #         }))
+    #     return make_response(jsonify({
+    #         'status': 200,
+    #         "data": [{
+    #             "id": id,
+    #             'message': 'User not found'
+    #         }]
+    #     }), 404)
 
     @jwt_required
     def get(self, id):
@@ -71,11 +68,4 @@ class MyAdmin(Resource, UsersModel):
                 "data": app_users
             }), 200)
 
-        return make_response(
-            jsonify(
-                {
-                    "status": 200,
-                    "error": "User with that id not found"
-                }
-            )
-        )
+        return {"data": [{"error": "User with that id not found"}]}, 200

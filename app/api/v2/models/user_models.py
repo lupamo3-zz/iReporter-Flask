@@ -56,8 +56,7 @@ class UsersModel():
         response = []
 
         for key, userrecords in enumerate(user_info):
-            user_id, firstname, lastname, othernames, username, email,
-            phonenumber, registered, isAdmin, password = userrecords
+            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin, password = userrecords
             userdata = dict(
                 user_id=int(user_id),
                 firstname=firstname,
@@ -72,6 +71,7 @@ class UsersModel():
             )
             response.append(userdata)
         return response
+        print(response)
 
     """ get one user's data"""
     def get_user_id(self, id):

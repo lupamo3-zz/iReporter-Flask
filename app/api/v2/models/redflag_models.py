@@ -53,8 +53,7 @@ class IncidentsModel():
         resp = []
 
         for key, records in enumerate(data):
-            incidents_id, type, status, comment, createdBy, createdOn,
-            location, images, videos = records
+            incidents_id, type, status, comment, createdBy, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
                 type=type,
