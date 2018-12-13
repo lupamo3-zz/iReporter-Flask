@@ -87,11 +87,13 @@ class UsersModel():
         if select_user:
             return select_user
 
-    def delete_user(self, user_id):
+    def delete_user(self, id):
+        """ To delete user and user details """
         user_connection = self.db
         currsor = user_connection.cursor()
-        currsor.execute("DELETE FROM users WHERE user_id = %s", (user_id,))
+        currsor.execute("DELETE FROM users WHERE user_id = %s", (id,))
         user_connection.commit()
+        return "User of that record has been deleted"
 
     def get_username_user(self, username):
         """ Get user by username """

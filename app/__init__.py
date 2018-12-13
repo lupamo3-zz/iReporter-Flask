@@ -1,7 +1,6 @@
 import os
-
-
-from flask import Flask
+import json
+from flask import Flask, jsonify, make_response
 from flask_restful import Api, Resource
 from flask_jwt_extended import JWTManager
 
@@ -27,5 +26,24 @@ def create_app(config_name):
 
     from .api.v2 import version_2 as v2
     app.register_blueprint(v2)
+
+    @app.errorhandler(403)
+    def forbidden(error):
+        return make_response(jsonify({
+            "message": "You do not have sufficient permissions"
+            "to access this resource."
+        }), 403)
+
+    @app.errorhandler(404)
+    def page_not_found(error):
+        return make_response(jsonify({
+            "message": "The record you are looking for does not exist"
+            }), 404)
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return make_response(jsonify({
+            "message": "The server encountered an internal error."
+        }), 500)
 
     return app

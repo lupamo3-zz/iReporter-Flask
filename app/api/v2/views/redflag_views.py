@@ -30,8 +30,8 @@ class MyIncidents(Resource, IncidentsModel):
         createdBy = data['createdBy']
 
         incid_data = self.db.save(comment, location, images, videos, createdBy)
-        return {"data": [{"incident_created": incid_data,
-                          "message": "Created redflag record"}]}, 201
+        return {"data": {"incident_created": incid_data,
+                          "message": "Created redflag record"}}, 201
 
     @jwt_required
     def get(self):
@@ -44,7 +44,7 @@ class MyIncidents(Resource, IncidentsModel):
                 "data": fetch_all
             }), 200)
 
-        return {"error": ["No Incidence found"]}, 404
+        return {"error": "No Incident found"}, 404
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -66,23 +66,18 @@ class MyRecords(Resource, IncidentsModel):
                 }), 200)
 
         return {"error": ["Incident with that id not found"]}, 404
-          
+
     @jwt_required
     def delete(self, id):
         """ Allows you to delete a red-flag record """
         incidents = self.db.get_incident_by_id(id)
         if not incidents:
-            return {"error": ["Incident with that id not found"]}, 404
+            return {"error": "Incident with that id not found"}, 404
 
         deleting = self.db.delete_redflag(id)
 
         if deleting:
-            return make_response(jsonify({
-                "data": [{
-                    "id": id,
-                    "message": deleting
-                }]
-            }), 200)
+            return {"data": {"id": id, "message": deleting}}, 200
 
 
 class MySpecificRecords(Resource, IncidentsModel):
@@ -123,3 +118,22 @@ class MyCommentRecords(Resource, IncidentsModel):
             return {"data": [{"New Comment": data['comment'],
                               "message": "Updated comment successfully"}]}, 200
         return {"data": [{"message": " Incident not found"}]}, 404
+
+
+class MyStatusRecords(Resource, IncidentsModel):
+    """ Edit the comment of a specific intervention record. """
+
+    def __init__(self):
+        self.db = IncidentsModel()
+
+    @jwt_required
+    def patch(self, id):
+        """ Admin makes changes to status"""
+        fetch_by_id = self.db.get_incident_by_id(id=id)
+        data = request.get_json(force=True)
+
+        if fetch_by_id:
+            self.db.update_status(data['status'], id)
+            return {"data": [{"New status": data['status'],
+                              "message": "Updated status successfully"}]}, 200
+        return {"data": [{"message": " Status Incident not found"}]}, 404

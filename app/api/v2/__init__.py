@@ -11,11 +11,19 @@ from app.api.v2.views.authentication import SignUp, SignIn
 
 version_2 = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 api = Api(version_2)
-api.add_resource(MyIncidents, '/incidents')
-api.add_resource(MyRecords, '/incidents/<int:id>')
-api.add_resource(MySpecificRecords, '/incidents/<int:id>/location')
-api.add_resource(MyCommentRecords, '/incidents/<int:id>/comment')
-api.add_resource(MyUsers, '/users')
-api.add_resource(MyAdmin, '/users/<int:id>')
-api.add_resource(SignUp, '/signup')
-api.add_resource(SignIn, '/login')
+api.add_resource(MyIncidents, '/incidents', strict_slashes=False)
+api.add_resource(MyRecords, '/incidents/<int:id>', strict_slashes=False)
+api.add_resource(
+    MySpecificRecords,
+    '/incidents/<int:id>/location',
+    strict_slashes=False
+)
+api.add_resource(
+    MyCommentRecords,
+    '/incidents/<int:id>/comment',
+    strict_slashes=False
+)
+api.add_resource(MyUsers, '/users', strict_slashes=False)
+api.add_resource(MyAdmin, '/users/<int:id>', strict_slashes=False)
+api.add_resource(SignUp, '/signup', strict_slashes=False)
+api.add_resource(SignIn, '/login', strict_slashes=False)

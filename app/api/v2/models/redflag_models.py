@@ -116,3 +116,14 @@ class IncidentsModel():
             WHERE incidents_id=%s""", (comment, incidents_id)
         )
         db_connection.commit()
+
+    def update_status(self, status, incidents_id):
+        """ Query to update user comment details """
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
+            """ UPDATE Incidents
+            SET status = %s
+            WHERE incidents_id=%s""", (status, incidents_id)
+        )
+        db_connection.commit()

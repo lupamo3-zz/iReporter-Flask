@@ -3,6 +3,7 @@ import re
 from flask_restful import request, Resource
 from flask import jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
+import datetime
 
 from flask_jwt_extended import create_access_token
 
@@ -20,7 +21,7 @@ class SignUp(Resource, UsersModel):
         """ Unregistered User sign up """
         data = request.get_json(force=True)
         if not data:
-            return {"data": [{"message": "Kindly input user info"}]}, 200
+            return {"message": "Kindly input user info"}, 200
 
         firstname = data['firstname']
         lastname = data['lastname']
@@ -33,20 +34,18 @@ class SignUp(Resource, UsersModel):
         try:
             user = self.db.get_username_user(username)
             if user:
-                return {"data":
-                        [{"message":
-                          "User {} already exists".format(data['username'])}]}, 400
+                return {"message":
+                        "User {} already exists".format(data['username'])
+                        }, 400
 
             sign_up = self.db.save(firstname, lastname, othernames, username,
                                    email, phonenumber, password)
 
-            return {"data":
-                    [{"message":
-                      "User {} created, now login ".format(username)}]}, 201
+            return {"message":
+                    "User {} created, now login ".format(username)}, 201
 
         except:
-            return {"data":
-                    [{"Message": "User creation not successful"}]}, 400
+            return {"Message": "User creation not successful"}, 400
 
 
 class SignIn(Resource, UsersModel):
@@ -59,25 +58,23 @@ class SignIn(Resource, UsersModel):
         """ Registered user login and validation """
         login_data = request.get_json(force=True)
         if not login_data:
-            return {"data":
-                    [{"Message":
-                      "Kindly input Username and Password details"}]}, 200
+            return {"Message":
+                    "Kindly input Username and Password details"}, 200
 
         username = login_data['username']
         password = generate_password_hash(login_data['password'])
         user = self.db.get_username_user(username)
 
         if not user:
-            return {"data":
-                    [{"Message":
-                      'User {} doesn\'t exist, Kindly register'.format(
-                          login_data['username'])}]}, 401
+            return {"Message":
+                    'User {} doesn\'t exist, Kindly register'.format(
+                        login_data['username'])}, 401
 
         if user:
             if check_password_hash(user[9], login_data['password']):
                 access_token = create_access_token(
                     identity=login_data['username'],
-                    expires_delta=False
+                    expires_delta=datetime.timedelta(minutes=60)
                 )
                 return {
                     "data":
@@ -86,4 +83,4 @@ class SignIn(Resource, UsersModel):
 
                 }, 200
 
-        return {"data": [{"message": "Wrong credentials, check password!"}]}, 401
+        return {"message": "Wrong credentials, check password!"}, 401
