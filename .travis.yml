@@ -6,10 +6,16 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE test_database;" -U postgres
+
 script:
+  - py.test --cov-report term-missing --cov app
   - pytest --cov=./app
 
-after_success: 
+after_success:
   - coveralls
-
-
+  - codecov 
