@@ -4,7 +4,7 @@
 
 An andela bootcamp application
 
-[Click here to access API documentation] (https://web.postman.co/collections/4927537-cba3f855-68d6-4064-8047-bb6c8357c9fc?workspace=f6d77981-6b13-4b06-8dc8-a533ebe758f9)
+[Click here to access API documentation](https://documenter.getpostman.com/view/4927537/Rzfgoozo)
 
 ### Prerequisites
 

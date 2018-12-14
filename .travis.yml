@@ -1,26 +1,27 @@
 language: python
 python:
   - "3.6"
-
-# command to install dependencies
-services:
- - postgresql 
-
-before_script:
- - psql -c "CREATE DATABASE ireporter_test;" -U n
- - python database_config.py
-
- install:
+  
+install:
   - pip install -r requirements.txt
   - pip install coveralls
 
+services:
+  - postgresql
+
+before_script:
+  - psql -c "CREATE DATABASE test_database;" -U postgres
+
 script:
+<<<<<<< HEAD
   - nosetests --with-coverage --cover-package=app
   - py.test -v --cov-report term-missing --cov app
   - pytest --cov=app/v2/
+=======
+  - py.test --cov-report term-missing --cov app
+  - pytest --cov=./app
+>>>>>>> a635ecdf843de0c9e0bd9cbca0be1c5d2f7cb8dd
 
-
-after_success: 
+after_success:
   - coveralls
-
-
+  - codecov 
