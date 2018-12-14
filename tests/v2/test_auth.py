@@ -2,7 +2,7 @@ import os
 import json
 import pytest
 
-from app.tests.v2.test_base import BaseTestClass
+from tests.v2.test_base import BaseTestClass
 
 
 class TestAuthorization(BaseTestClass):

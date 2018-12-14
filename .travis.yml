@@ -14,10 +14,10 @@ before_script:
   - pip install -r requirements.txt
   - pip install coveralls
 
- script:
+script:
   - nosetests --with-coverage --cover-package=app
   - py.test -v --cov-report term-missing --cov app
-  - pytest --cov=./app
+  - pytest --cov=app/v2/
 
 
 after_success: 
