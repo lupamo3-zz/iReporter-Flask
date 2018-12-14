@@ -20,11 +20,10 @@ class MyUsers(Resource, UsersModel):
         if all_users:
 
             return make_response(jsonify({
-                "status": 200,
                 "data": all_users
             }), 200)
 
-        return {"data": [{"error": "No Users found"}]}, 404
+        return {"error": "No Users found"}, 404
 
 
 class MyAdmin(Resource, UsersModel):
@@ -35,26 +34,16 @@ class MyAdmin(Resource, UsersModel):
     def __init__(self):
         self.db = UsersModel()
 
-    # @jwt_required
-    # def delete(self, id):
+    @jwt_required
+    def delete(self, id):
+        """ Docstring for deleting users"""
+        app_users = self.db.get_user_id(id)
+        if not app_users:
+            return {"error": "User with that id not found"}, 404
+        delete_user = self.db.delete_user(id)
 
-    #     delete_user = self.db.delete_user(id)
-
-    #     if delete_user:
-    #         return make_response(jsonify({
-    #             'status': 200,
-    #             "data": [{
-    #                 "id": id,
-    #                 "message": "User with that record has been deleted"
-    #             }]
-    #         }))
-    #     return make_response(jsonify({
-    #         'status': 200,
-    #         "data": [{
-    #             "id": id,
-    #             'message': 'User not found'
-    #         }]
-    #     }), 404)
+        if delete_user:
+            return {"data": {"id": id, "message": delete_user}}, 200
 
     @jwt_required
     def get(self, id):
@@ -64,8 +53,7 @@ class MyAdmin(Resource, UsersModel):
 
         if app_users:
             return make_response(jsonify({
-                "status": 200,
                 "data": app_users
             }), 200)
 
-        return {"data": [{"error": "User with that id not found"}]}, 200
+        return {"data": {"error": "User id {} id not found" .format(id)}}, 200
