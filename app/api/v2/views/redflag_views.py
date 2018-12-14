@@ -18,10 +18,10 @@ class MyIncidents(Resource, IncidentsModel):
         data = request.get_json(force=True)
 
         if not data:
-            return {"data": {"message": "No data input!"}}, 400
+            return {"message": "No data input!"}, 400
         elif not data['location'] or not data["comment"]:
-            return {"data": {"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}}, 400
+            return {"message": "Ensure you have\
+ filled all fields. i.e {} " .format(data)}, 400
 
         comment = data['comment']
         location = data['location']
@@ -30,8 +30,8 @@ class MyIncidents(Resource, IncidentsModel):
         createdBy = data['createdBy']
 
         incid_data = self.db.save(comment, location, images, videos, createdBy)
-        return {"data": {"incident_created": incid_data,
-                          "message": "Created redflag record"}}, 201
+        return {"incident_created": incid_data,
+                "message": "Created redflag record"}, 201
 
     @jwt_required
     def get(self):
@@ -65,7 +65,7 @@ class MyRecords(Resource, IncidentsModel):
                     "data": incidents
                 }), 200)
 
-        return {"error": ["Incident with that id not found"]}, 404
+        return {"error": "Incident with that id not found"}, 404
 
     @jwt_required
     def delete(self, id):
@@ -77,7 +77,7 @@ class MyRecords(Resource, IncidentsModel):
         deleting = self.db.delete_redflag(id)
 
         if deleting:
-            return {"data": {"id": id, "message": deleting}}, 200
+            return {"id": id, "message": deleting}, 200
 
 
 class MySpecificRecords(Resource, IncidentsModel):
@@ -94,11 +94,11 @@ class MySpecificRecords(Resource, IncidentsModel):
 
         if get_by_id:
             self.db.update_location(data['location'], id)
-            return {"data": [{
+            return {
                 "New Location": data['location'],
                 "message": "Updated location successfully",
-            }]}, 200
-        return {"data": [{"message": " Incident not found"}]}, 404
+            }, 200
+        return {"message": " Incident not found"}, 404
 
 
 class MyCommentRecords(Resource, IncidentsModel):
@@ -115,9 +115,9 @@ class MyCommentRecords(Resource, IncidentsModel):
 
         if get_by_id:
             self.db.update_comment(data['comment'], id)
-            return {"data": [{"New Comment": data['comment'],
-                              "message": "Updated comment successfully"}]}, 200
-        return {"data": [{"message": " Incident not found"}]}, 404
+            return {"New Comment": data['comment'],
+                    "message": "Updated comment successfully"}, 200
+        return {"message": " Incident not found"}, 404
 
 
 class MyStatusRecords(Resource, IncidentsModel):
@@ -134,6 +134,6 @@ class MyStatusRecords(Resource, IncidentsModel):
 
         if fetch_by_id:
             self.db.update_status(data['status'], id)
-            return {"data": [{"New status": data['status'],
-                              "message": "Updated status successfully"}]}, 200
-        return {"data": [{"message": " Status Incident not found"}]}, 404
+            return {"New status": data['status'],
+                    "message": "Updated status successfully"}, 200
+        return {"message": " Status Incident not found"}, 404

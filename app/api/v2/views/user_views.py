@@ -43,7 +43,7 @@ class MyAdmin(Resource, UsersModel):
         delete_user = self.db.delete_user(id)
 
         if delete_user:
-            return {"data": {"id": id, "message": delete_user}}, 200
+            return {"id": id, "message": delete_user}, 200
 
     @jwt_required
     def get(self, id):
@@ -56,4 +56,4 @@ class MyAdmin(Resource, UsersModel):
                 "data": app_users
             }), 200)
 
-        return {"data": {"error": "User id {} id not found" .format(id)}}, 200
+        return {"error": "User id {} id not found" .format(id)}, 200

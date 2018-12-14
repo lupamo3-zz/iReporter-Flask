@@ -21,18 +21,15 @@ class MyIncidents(Resource, IncidentsModel):
         try:
             if not data:
                 return make_response(jsonify({
-                    "status": 404,
                     "message": "No data input"
                 }), 404)
             elif not data['location'] or not data["createdBy"] or not data["comment"]:
                 return make_response(jsonify({
-                    "status": 404,
                     "data": [{"message": "Ensure you have\
     filled all fields. i.e {} " .format(data)}]
                 }), 404)
         except:
             return make_response(jsonify({
-                "status": 404,
                 "message": "Kindly check for missing field"
             }), 404)
 
@@ -62,19 +59,16 @@ class MyIncidents(Resource, IncidentsModel):
         if resp == "white space":
 
             return make_response(jsonify({
-                "status": 400,
                 "error": "Whitespaces not allowed"
             }), 400)
 
         if resp == "missing data":
 
             return make_response(jsonify({
-                "status": 400,
                 "error": "Kindly input the correct data"
             })), 400
 
         return make_response(jsonify({
-            "status": 201,
             "data": [{
                 "incident_created": resp,
                 "message": "Created redflag record"
@@ -88,14 +82,12 @@ class MyIncidents(Resource, IncidentsModel):
         if fetch_all:
 
             return make_response(jsonify({
-                "status": 200,
                 "data": fetch_all
             }), 200)
 
         return make_response(jsonify({
-            "status": 404,
             "error": "No Red-flag record found"
-        }))
+        }), 404)
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -113,14 +105,12 @@ class MyRecords(Resource, IncidentsModel):
             if i['id'] == id:
 
                 return make_response(jsonify({
-                    "status": 200,
                     "data": i
                 }), 200)
 
         return make_response(
             jsonify(
                 {
-                    "status": 404,
                     "error": "Redflag with that id not found"
                 }
             )
@@ -137,12 +127,11 @@ class MyRecords(Resource, IncidentsModel):
             incidel.remove(deleting)
 
         return make_response(jsonify({
-            'status': 200,
             "data": [{
                 "id": id,
                 "message": "red-flag record has been deleted"
             }]
-        }))
+        }), 200)
 
     def patch(self, id):
         """ Allows you to make changes to an exisiting red-flag """
@@ -153,7 +142,6 @@ class MyRecords(Resource, IncidentsModel):
         topatch.update(request.get_json())
 
         return make_response(jsonify({
-            'status': 200,
             'data': [{
                 'id': id,
                 "data": topatch,
