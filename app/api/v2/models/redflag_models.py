@@ -14,11 +14,10 @@ class IncidentsModel():
         self.db = test_init_db()
         self.status = "Draft"
         self.createdOn = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        self.type = "Redflags"
 
     """ save our data and appends to the database """
 
-    def save(self, comment, location, images, videos, createdBy):
+    def save(self, comment, location, images, videos, createdBy, type):
 
         incident_data = {
             "comment": comment,
@@ -27,7 +26,7 @@ class IncidentsModel():
             "images": images,
             "location": location,
             "status": self.status,
-            "type": self.type,
+            "type": type,
             "videos": videos
         }
 

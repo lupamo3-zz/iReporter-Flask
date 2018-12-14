@@ -28,8 +28,11 @@ class MyIncidents(Resource, IncidentsModel):
         images = data['images']
         videos = data['videos']
         createdBy = data['createdBy']
+        type = data['type']
 
-        incid_data = self.db.save(comment, location, images, videos, createdBy)
+        incid_data = self.db.save(
+            comment, location, images, videos, createdBy, type
+            )
         return {"incident_created": incid_data,
                 "message": "Created redflag record"}, 201
 
