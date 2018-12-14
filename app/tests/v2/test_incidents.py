@@ -30,6 +30,8 @@ class TestRedflags(BaseTestClass):
                      'Authorization': 'Bearer '+self.auth_token}
         )
         self.assertEqual(response.status_code, 201)
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["message"], "Created redflag record")
 
     def test_get_one_record(self):
         """ Test if API is able to get a single ID record"""
@@ -58,6 +60,8 @@ class TestRedflags(BaseTestClass):
             '/api/v2/incidents/1',
             headers={'Authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(res.status_code, 200)
+        result = json.loads(res.data.decode())
+        self.assertEqual(result["id"], 1)
 
     def test_record_without_comment(self):
         """ Test if API can post with one field not filled"""
@@ -69,7 +73,7 @@ class TestRedflags(BaseTestClass):
         )
         self.assertEqual(response.status_code, 400)
 
-    def test_creation_record_empty_fileds(self):
+    def test_creation_record_empty_fields(self):
         """ Test if API can post with all fields empty"""
         response = self.client.post(
             '/api/v2/incidents',
@@ -78,6 +82,8 @@ class TestRedflags(BaseTestClass):
                      'authorization': 'Bearer ' + self.auth_token}
         )
         self.assertEqual(response.status_code, 400)
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["message"], "No data input!")
 
     def test_no_record_to_delete(self):
         """Test if API can delete existing records """
@@ -100,6 +106,8 @@ class TestRedflags(BaseTestClass):
             headers={'Authorization': 'Bearer ' + self.auth_token}
         )
         self.assertEqual(response.status_code, 404)
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["error"], "Incident with that id not found")
 
     def test_editing_location(self):
         """ Test if API is able to change location """
@@ -117,8 +125,9 @@ class TestRedflags(BaseTestClass):
             data=json.dumps(patch_record),
             headers={"content-type": "application/json",
                      'Authorization': 'Bearer ' + self.auth_token})
-        data = json.loads(response.data)
         self.assertEqual(response.status_code, 200)
+        result = json.loads(response.data.decode())
+        self.assertEqual(result["message"], "Updated location successfully")
 
 
 if __name__ == '__main__':
