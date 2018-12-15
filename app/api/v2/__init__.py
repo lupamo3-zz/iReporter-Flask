@@ -3,7 +3,7 @@ from flask import Blueprint
 
 from app.api.v2.views.redflag_views import (
     MyRecords, MyIncidents, MySpecificRecords,
-    MyCommentRecords
+    MyCommentRecords, MyStatusRecords
 )
 from app.api.v2.views.user_views import MyUsers, MyAdmin
 from app.api.v2.views.authentication import SignUp, SignIn
@@ -21,6 +21,11 @@ api.add_resource(
 api.add_resource(
     MyCommentRecords,
     '/incidents/<int:id>/comment',
+    strict_slashes=False
+)
+api.add_resource(
+    MyStatusRecords,
+    '/incidents/<int:id>/status',
     strict_slashes=False
 )
 api.add_resource(MyUsers, '/users', strict_slashes=False)

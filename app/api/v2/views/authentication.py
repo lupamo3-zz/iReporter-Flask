@@ -6,7 +6,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 
 from flask_jwt_extended import create_access_token
-
+from app.api.v2.views.validations import Validations
 from app.api.v2.models.user_models import UsersModel
 
 
@@ -32,6 +32,13 @@ class SignUp(Resource, UsersModel):
         password = generate_password_hash(data['password'])
 
         try:
+            validate = Validations().validate_user_data(
+                firstname, lastname, othernames, username,
+                email, phonenumber, password)
+
+            if validate:
+                return {'error': validate['error']}, 400
+
             user = self.db.get_username_user(username)
             if user:
                 return {"message":
@@ -45,7 +52,7 @@ class SignUp(Resource, UsersModel):
                     "User {} created, now login ".format(username)}, 201
 
         except:
-            return {"Message": "User creation not successful"}, 400
+            return {"Message": "User creation not successful, check data"}, 400
 
 
 class SignIn(Resource, UsersModel):

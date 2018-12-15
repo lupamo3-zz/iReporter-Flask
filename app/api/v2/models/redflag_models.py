@@ -1,6 +1,8 @@
 from datetime import datetime
 
 from app.database_config import test_init_db
+from app.api.v2.models.user_models import UsersModel
+from app.api.v2.views.authentication import SignIn
 
 
 def get_timestamp():
@@ -14,11 +16,10 @@ class IncidentsModel():
         self.db = test_init_db()
         self.status = "Draft"
         self.createdOn = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        self.type = "Redflags"
 
     """ save our data and appends to the database """
 
-    def save(self, comment, location, images, videos, createdBy):
+    def save(self, comment, location, images, videos, createdBy, type):
 
         incident_data = {
             "comment": comment,
@@ -27,7 +28,7 @@ class IncidentsModel():
             "images": images,
             "location": location,
             "status": self.status,
-            "type": self.type,
+            "type": type,
             "videos": videos
         }
 
@@ -48,8 +49,8 @@ class IncidentsModel():
         db_connection = self.db
         currsor = db_connection.cursor()
         currsor.execute("""SELECT incidents_id, type, status, comment,
-                 createdBy, createdOn, location,  images, videos
-                  FROM incidents""")
+                    createdBy, createdOn, location,  images, videos
+                    FROM incidents""")
         data = currsor.fetchall()
         response = []
 
@@ -84,14 +85,20 @@ class IncidentsModel():
                 WHERE incidents_id = %s"""
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute(query, (createdBy, incidents_id))
+        if UsersModel().check_if_admin():
+            currsor.execute(query, (createdBy, incidents_id))
+        else:
+            currsor.execute(query, (createdBy, incidents_id))
         db_connection.commit()
 
     def get_incident_by_id(self, id):
         """ Get redflag or interevention details by id"""
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        if UsersModel().check_if_admin():
+            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        else:
+            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
         incident = currsor.fetchall()
         return incident
 
