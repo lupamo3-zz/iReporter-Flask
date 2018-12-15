@@ -6,7 +6,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import datetime
 
 from flask_jwt_extended import create_access_token
-from app.api.v2.views.validations import Validations
 from app.api.v2.models.user_models import UsersModel
 
 
@@ -32,13 +31,6 @@ class SignUp(Resource, UsersModel):
         password = generate_password_hash(data['password'])
 
         try:
-            validate = Validations().validate_user_data(
-                firstname, lastname, othernames, username,
-                email, phonenumber, password)
-
-            if validate:
-                return {'error': validate['error']}, 400
-
             user = self.db.get_username_user(username)
             if user:
                 return {"message":
@@ -80,7 +72,7 @@ class SignIn(Resource, UsersModel):
         if user:
             if check_password_hash(user[9], login_data['password']):
                 access_token = create_access_token(
-                    identity=login_data['username'],
+                    identity=login_data['user_id'],
                     expires_delta=datetime.timedelta(minutes=60)
                 )
                 return {

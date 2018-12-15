@@ -2,7 +2,6 @@ from flask import jsonify, make_response
 from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api.v2.models.redflag_models import IncidentsModel
-from app.api.v2.views.validations import Validations
 
 
 class MyIncidents(Resource, IncidentsModel):
@@ -16,7 +15,7 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-
+        
         if not data:
             return {"message": "No data input!"}, 400
         elif not data['location'] or not data["comment"]:

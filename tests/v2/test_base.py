@@ -97,6 +97,7 @@ class BaseTestClass(unittest.TestCase):
             headers={"content-type": "application/json"}
         )
         response = json.loads(login_res.data)
+        print(response)
         self.auth_token = response["access_token"]
 
     def tearDown(self):

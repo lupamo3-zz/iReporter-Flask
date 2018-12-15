@@ -124,6 +124,20 @@ class IncidentsModel():
         )
         db_connection.commit()
 
+    # def check_existing_comment(self, comment, incidents_id):
+    #     """ To check comment isn't the same """
+    #     db_connection = self.db
+    #     currsor = db_connection.cursor()
+    #     cursor.execute(
+    #         """ SELECT * FROM Incidents 
+    #         WHERE comment = %s;""", (comment, incidents_id)
+    #     )
+    #     db_connection.commit()
+    #     comment = currsor.fetchone()
+    #     if comment:
+    #         return True
+    #     return False
+
     def update_status(self, status, incidents_id):
         """ Query to update user comment details """
         db_connection = self.db
@@ -134,3 +148,28 @@ class IncidentsModel():
             WHERE incidents_id=%s""", (status, incidents_id)
         )
         db_connection.commit()
+
+    # def validate_data(self, data):
+    #     """ User data validation """
+    #     try:
+    #         # check if Type has letters only
+    #         if not data['type'].strip().isalpha():
+    #             return "Type can only contain letters only"
+
+    #         # check if the incidentType is more than 7 characters
+    #         elif len(data['Type'].strip()) < 4:
+    #             return "Type must be more than 7 characters"
+
+    #         # check if the comment is more than 15 characters
+    #         elif len(data['comment'].strip()) < 3:
+    #             return "comment must be more than 3 characters"
+
+    #         # check if the location is more than 3 characters
+    #         elif len(data['location'].strip()) < 3:
+    #             return "location must be more than 3 characters"
+
+    #         else:
+    #             return "valid"
+    #     except Exception as error:
+    #         return "please provide all the fields,\
+    #          missing " + str(error)

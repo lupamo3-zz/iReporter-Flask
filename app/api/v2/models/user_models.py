@@ -15,6 +15,7 @@ class UsersModel():
     def __init__(self):
         self.db = test_init_db()
         self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
+        self.isAdmin = False
 
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
@@ -28,15 +29,16 @@ class UsersModel():
             "email": email,
             "phonenumber": phonenumber,
             "registered": self.registered,
-            "password": password
+            "password": password,
+            "isAdmin": isAdmin
         }
 
         inquire = """INSERT INTO users (firstname, lastname,
                  othernames, username, email, phonenumber, registered,
-                  password) VALUES (
+                  password, isAdmin) VALUES (
                   %(firstname)s, %(lastname)s, %(othernames)s, %(username)s,
                   %(email)s, %(phonenumber)s, %(registered)s,
-                   %(password)s)"""
+                   %(password)s, %(isAdmin)s)"""
         currsor = self.db.cursor()
         currsor.execute(inquire, user_data)
         self.db.commit()
@@ -102,20 +104,10 @@ class UsersModel():
             return select_user
 
     def login_user(self):
+        """ User login validation """
         user_connection = self.db
         currsor = user_connection.cursor()
         username = request.get_json()['username']
         currsor.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
-        user_connection.commit
-
-    def check_if_admin(self):
-        user = get_jwt_identity()
-        user_connection = self.db
-        currsor = user_connection.cursor()
-        currsor.execute("SELECT * FROM users WHERE username='" + str(user) + "'")
-        select_admin = currsor.fetchone()
-        print(select_admin)
-        # convert_data = list(select_admin)
-        # admin_index = convert_data[8]
-        # if admin_index == 'true':
-        #     return True
+        user_connection.commit()
+        
