@@ -1,8 +1,8 @@
 from flask import jsonify, make_response
 from flask_restful import Resource, request
-from flask_jwt_extended import jwt_required
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api.v2.models.redflag_models import IncidentsModel
+from app.api.v2.views.validations import Validations
 
 
 class MyIncidents(Resource, IncidentsModel):
@@ -61,14 +61,17 @@ class MyRecords(Resource, IncidentsModel):
     @jwt_required
     def get(self, id):
         """ Get a specific red-flag record """
-        incidents = self.db.get_incident_by_id(id)
-        if incidents:
+        current_user = get_jwt_identity()
+        if current_user:
+            incidents = self.db.get_incident_by_id(id)
+            if incidents:
 
-                return make_response(jsonify({
-                    "data": incidents
-                }), 200)
+                    return make_response(jsonify({
+                        "data": incidents
+                    }), 200)
 
-        return {"error": "Incident with that id not found"}, 404
+            return {"error": "Incident with that id not found"}, 404
+        return {"error": "You aren't authorized to access this route"}, 403
 
     @jwt_required
     def delete(self, id):
@@ -134,6 +137,10 @@ class MyStatusRecords(Resource, IncidentsModel):
         """ Admin makes changes to status"""
         fetch_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
+        if data['status'] != 'draft':
+            return {
+                "message": "Forbidden, status can only be updated when draft"
+            }, 403
 
         if fetch_by_id:
             self.db.update_status(data['status'], id)

@@ -1,7 +1,7 @@
 from flask import jsonify, make_response
 from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required
-
+from app.api.v2.views.validations import Validations
 from app.api.v2.models.user_models import UsersModel
 
 

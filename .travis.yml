@@ -11,16 +11,11 @@ services:
 
 before_script:
   - psql -c "CREATE DATABASE test_database;" -U postgres
+  - psql -c "CREATE USER n WITH PASSWORD '123456' createdb;" -U postgres
 
 script:
-<<<<<<< HEAD
-  - nosetests --with-coverage --cover-package=app
-  - py.test -v --cov-report term-missing --cov app
-  - pytest --cov=app/v2/
-=======
   - py.test --cov-report term-missing --cov app
   - pytest --cov=./app
->>>>>>> a635ecdf843de0c9e0bd9cbca0be1c5d2f7cb8dd
 
 after_success:
   - coveralls

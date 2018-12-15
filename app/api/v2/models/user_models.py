@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.database_config import test_init_db
 
 
@@ -49,12 +49,12 @@ class UsersModel():
         currsor = user_connection.cursor()
         currsor.execute("""SELECT user_id, firstname, lastname,
                      othernames, username, email, phonenumber, registered,
-                     isAdmin, password FROM users""")
+                     isAdmin FROM users""")
         user_info = currsor.fetchall()
         response = []
 
         for key, userrecords in enumerate(user_info):
-            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin, password = userrecords
+            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin = userrecords
             user_data = dict(
                 user_id=int(user_id),
                 firstname=firstname,
@@ -64,12 +64,10 @@ class UsersModel():
                 email=email,
                 phonenumber=phonenumber,
                 registered=registered,
-                isAdmin=isAdmin,
-                password=password
+                isAdmin=isAdmin
             )
             response.append(user_data)
         return response
-        print(response)
 
     """ get one user's data"""
     def get_user_id(self, id):
@@ -109,3 +107,15 @@ class UsersModel():
         username = request.get_json()['username']
         currsor.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
         user_connection.commit
+
+    def check_if_admin(self):
+        user = get_jwt_identity()
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("SELECT * FROM users WHERE username='" + str(user) + "'")
+        select_admin = currsor.fetchone()
+        print(select_admin)
+        # convert_data = list(select_admin)
+        # admin_index = convert_data[8]
+        # if admin_index == 'true':
+        #     return True
