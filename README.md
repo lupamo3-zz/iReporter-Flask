@@ -1,8 +1,6 @@
 # iReporter-Flask
 
-<a href="http://fvcproductions.com"><img src="https://avatars1.githubusercontent.com/u/4284691?v=3&s=200" title="FVCproductions" alt="FVCproductions"></a>
-
-<!-- [![FVCproductions](https://avatars1.githubusercontent.com/u/4284691?v=3&s=200)](http://fvcproductions.com) -->
+<a href="http://anjichilupamo.me/iReporter/UI"><img src="https://avatars1.githubusercontent.com/u/4284691?v=3&s=200" title="FVCproductions" alt="FVCproductions"></a>
 
 [![Coverage Status](https://coveralls.io/repos/github/lupamo3/iReporter-Flask/badge.svg?branch=develop)](https://coveralls.io/github/lupamo3/iReporter-Flask?branch=develop) <a href="https://codeclimate.com/github/lupamo3/iReporter-Flask/maintainability"><img src="https://api.codeclimate.com/v1/badges/2eb7bda101886f90ecbe/maintainability" /></a> [![Build Status](https://travis-ci.org/lupamo3/iReporter-Flask.svg?branch=develop)](https://travis-ci.org/lupamo3/iReporter-Flask) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -28,8 +26,7 @@ What you need to get started:
 #### Technologies used
     - Python 3.6.5
     - Flask_RESTful
-    - Travis CI
-    - Coveralls
+    - PostgresQl
 
 
 ### Usage:
@@ -56,17 +53,39 @@ pip install -r requirements.txt
   - py.test -v --cov-report term-missing --cov app
   ```
 
-##### Test the application on Postman
+### Test the application on Postman
 ## Test The API end-points
-###### Input this url[https://dashboard.heroku.com/apps/ireporterflask-api-heroku] on your postman to test the URLs
+#### Use this URl [https://ireporterflask-api-heroku.herokuapp.com/] on your postman to test the URLs
 
 or use:
 
-| URL                       | METHOD        | MESSAGE                                |
-| --------------------------|:-------------:| --------------------------------------:|
-|api/v1/incident/           | GET           | Get all red-flag incidences            |
-|api/v1/incident/           | POST          | Create a new red-flag record           |
-|api/v1/incident/<int:id>   | GET<int:id>   | Get red-flags by id                    |
-|api/v1/incident/<int:id>   | PATCH<int:id> | Make changes to an item in the red-flag|
-|api/v1/incident/<int:id>   | DELETE<int:id>| Delete a specific red-flag.            |
+| URL                                 | METHOD                 | MESSAGE                                |
+| ------------------------------------|:----------------------:| --------------------------------------:|
+|api/v2/incidents/                    | GET                    | Get all Incidence records.             |
+|api/v2/incidents/                    | POST                   | Create a Incidence record.             |
+|api/v2/incidents/<int:id>            | GET<int:id>            | Get Incident by id                     |
+|api/v2/incidents/<int:id>            | DELETE<int:id>         | Delete a specific incident record      |
+|api/v2/incidents/<int:id>/comment    | PATCH<int:id>/comment  | Patch a comment incident record        |
+|api/v2/incidents/<int:id>/location   | PATCH<int:id>/location | Patch a location incident record       |
+|api/v2/incidents/<int:id>/status     | PATCH<int:id>/status   | Patch a status record.                 |
+|api/v2/signup                        | POST                   | Create i-Reporter account.             |
+|api/v2/users                         | GET                    | Get all Users                          |
+|api/v2/userss/<int:id>               | GET<int:id>            | Get a user by id                       |
+
+---
+
+## Help & Review
+
+- **Feel free to reach me via email and to fork this project**
+    - Any feedback would be appreciated.
+    - The Pull requests have bit by bit application documentation
+
+---
+
+## License
+
+[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
+
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2018 © <a href="http://anjichilupamo.me/iReporter/UI" target="_blank">iReporter</a>.
 
