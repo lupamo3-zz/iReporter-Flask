@@ -8,10 +8,10 @@ testdb_url = os.getenv('TESTDATABASE_URL')
 password = generate_password_hash("andela23")
 
 
-# def connection(db_url):
-#     """ Connection to the postgres database-server using psycopg2 module"""
-#     conn = psycopg2.connect(db_url)
-#     return conn
+def connection(db_url):
+    """ Connection to the postgres database-server using psycopg2 module"""
+    conn = psycopg2.connect(db_url)
+    return conn
 
 
 def test_connection(testdb_url):
@@ -47,7 +47,7 @@ def test_init_db():
 
 def create_test_tables():
     """ Create tables for testing """
-    conn = connection(testdb_url)
+    conn = test_connection(testdb_url)
     curr = conn.cursor()
     queries = tables()
 
