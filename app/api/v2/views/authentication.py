@@ -54,6 +54,8 @@ class SignUp(Resource, UsersModel):
             return make_response(jsonify({'error': 'Password must have at least one alphabet letter in it!'}), 400)
         elif re.search('[!,#,$,%,&,*,+,-,<,=,>,?,@,^,_,{,|,},~,]', (data['password'])) is None:
             return make_response(jsonify({'error': 'Password must have at least a special character in it!'}), 400)
+        elif not len(data['phonenumber'].strip()) == 10:
+                return {"error": "phone number must have 10 characters"}, 400
         else:
 
             firstname = data['firstname']

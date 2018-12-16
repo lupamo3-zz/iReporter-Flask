@@ -1,3 +1,4 @@
+import re
 from flask import jsonify, make_response
 from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -37,24 +38,35 @@ class MyIncidents(Resource, IncidentsModel):
                 return {"error": "comment must be more than 9 characters"}
         elif len(data['location'].strip()) < 2:
                 return {"error" "location must be more than 2 characters"}
+        elif re.search('[a-z]', (data['comment'])) is None:
+            return make_response(jsonify({'error': 'Comment must have at least one alphabet letter in it!'}), 400)
+        elif not re.search(r"([a-zA-Z0-9\s_\\.\-\(\):])+(.jpg|.png|.jpeg|.gif)$", (data['images'])):
+            return make_response(jsonify({'error': 'Invalid image format'}), 400)
+        elif not re.search(r"([a-zA-Z0-9\s_\\.\-\(\):])+(.mp4)$", (data['videos'])):
+            return make_response(jsonify({'error': 'Invalid Video format'}), 400)
+        elif not data['incidentType'] == "Redflag":
+            return {"IncidentType": "Can only be Redflag or Intervention"}
+        else:
 
-        comment = data['comment']
-        location = data['location']
-        images = data['images']
-        videos = data['videos']
-        createdBy = data['createdBy']
-        incidentType = data['incidentType']
+            comment = data['comment']
+            location = data['location']
+            images = data['images']
+            videos = data['videos']
+            createdBy = data['createdBy']
+            incidentType = data['incidentType']
 
-        incid_data = self.db.save(
-            comment, location, images, videos, createdBy, incidentType
-            )
-        
-        return {"incident_created": incid_data,
-                "message": "Created redflag record"}, 201
+            incid_data = self.db.save(
+                comment, location, images, videos, createdBy, incidentType
+                )
+            
+            return {"incident_created": incid_data,
+                    "message": "Created redflag record"}, 201
 
     @jwt_required
     def get(self):
         """ Get all red flag records """
+        current_user = get_jwt_identity()
+        print(current_user)
         fetch_all = self.db.get_incidents()
 
         if fetch_all:
@@ -77,8 +89,11 @@ class MyRecords(Resource, IncidentsModel):
     @jwt_required
     def get(self, id):
         """ Get a specific red-flag record """
+        username = UsersModel.get_username_user(username)
+        print(username)
         current_user = get_jwt_identity()
-        if current_user:
+        print(current_user)
+        if username == current_user:
             incidents = self.db.get_incident_by_id(id)
             if incidents:
 
@@ -134,10 +149,10 @@ class MyCommentRecords(Resource, IncidentsModel):
     def patch(self, id):
         """ Allows you to make changes to redflag commments"""
         data = request.get_json(force=True)
-        comment = data['comment']
-        check_comment = self.db.check_existing_comment(comment)
-        if check_comment:
-            return {"Message": "Comment already exists"}
+        # comment = data['comment']
+        # check_comment = self.db.check_existing_comment(comment)
+        # if check_comment:
+        #     return {"Message": "Comment already exists"}
         get_by_id = self.db.get_incident_by_id(id=id)
 
         if get_by_id:
