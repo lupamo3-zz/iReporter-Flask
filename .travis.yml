@@ -18,7 +18,7 @@ before_script:
   - psql -c "CREATE USER n WITH PASSWORD '123456' createdb;" -U postgres
 
 script:
-  - py.test --cov-report term-missing --cov app
+  - pytest --cov-report term-missing --cov app
   - pytest --cov=./app
 
 after_success:

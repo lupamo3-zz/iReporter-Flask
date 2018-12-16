@@ -13,7 +13,7 @@ class BaseTestClass(unittest.TestCase):
     def setUp(self):
         """ Defines the test data """
 
-        self.app = create_app(config_name="testing")
+        self.app = create_app(config_name="development")
         self.client = self.app.test_client()
         self.db = test_init_db()
 
