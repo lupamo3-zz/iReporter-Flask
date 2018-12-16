@@ -2,6 +2,9 @@ from flask import jsonify, make_response
 from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api.v2.models.redflag_models import IncidentsModel
+from app.api.v2.models.user_models import UsersModel
+
+UsersModel = UsersModel()
 
 
 class MyIncidents(Resource, IncidentsModel):
@@ -75,8 +78,11 @@ class MyRecords(Resource, IncidentsModel):
     @jwt_required
     def delete(self, id):
         """ Allows you to delete a red-flag record """
+        current_user = get_jwt_identity()
         incidents = self.db.get_incident_by_id(id)
-        if not incidents:
+        if incidents:
+            if incidents[4] == current_user:
+                res = 
             return {"error": "Incident with that id not found"}, 404
 
         deleting = self.db.delete_redflag(id)
@@ -94,6 +100,8 @@ class MySpecificRecords(Resource, IncidentsModel):
     @jwt_required
     def patch(self, id):
         """ Makes the location editable by user """
+        current_user = get_jwt_identity()
+        print(current_user)
         get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
 
@@ -140,8 +148,7 @@ class MyStatusRecords(Resource, IncidentsModel):
             return {
                 "message": "Forbidden, status can only be updated when draft"
             }, 403
-
-        if fetch_by_id:
+        elif fetch_by_id:
             self.db.update_status(data['status'], id)
             return {"New status": data['status'],
                     "message": "Updated status successfully"}, 200

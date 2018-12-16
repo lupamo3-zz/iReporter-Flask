@@ -46,7 +46,7 @@ class MyAdmin(Resource, UsersModel):
 
         if delete_user:
             return {"id": id, "message": delete_user}, 200
-
+ 
     @jwt_required
     def get(self, id):
         """ Admin get a specif user by id """

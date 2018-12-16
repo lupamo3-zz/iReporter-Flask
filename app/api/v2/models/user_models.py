@@ -20,18 +20,20 @@ class UsersModel():
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
              phonenumber, password):
-
-        user_data = {
-            "firstname": firstname,
-            "lastname": lastname,
-            "othernames": othernames,
-            "username": username,
-            "email": email,
-            "phonenumber": phonenumber,
-            "registered": self.registered,
-            "password": password,
-            "isAdmin": isAdmin
-        }
+        try:
+            user_data = {
+                "firstname": firstname,
+                "lastname": lastname,
+                "othernames": othernames,
+                "username": username,
+                "email": email,
+                "phonenumber": phonenumber,
+                "registered": self.registered,
+                "password": password,
+                "isAdmin": self.isAdmin
+            }
+        except KeyError:
+            return False, "Missing fields"
 
         inquire = """INSERT INTO users (firstname, lastname,
                  othernames, username, email, phonenumber, registered,
@@ -75,6 +77,7 @@ class UsersModel():
     def get_user_id(self, id):
         """ Get a user by ID """
         user_connection = self.db
+        print(user_connection)
         currsor = user_connection.cursor()
         currsor.execute("""SELECT * FROM users WHERE user_id=%s""", (id, ))
 
@@ -110,4 +113,3 @@ class UsersModel():
         username = request.get_json()['username']
         currsor.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
         user_connection.commit()
-        

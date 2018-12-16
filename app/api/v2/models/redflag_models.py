@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import psycopg2
 from app.database_config import test_init_db
 from app.api.v2.models.user_models import UsersModel
 from app.api.v2.views.authentication import SignIn
@@ -74,7 +74,7 @@ class IncidentsModel():
         """ To delete redflag and incident details """
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
+        currsor.execute("DELETE FROM incidents WHERE incidents_id = %s;", (id,))
         db_connection.commit()
         return "Incident record has been deleted"
 
@@ -95,11 +95,8 @@ class IncidentsModel():
         """ Get redflag or interevention details by id"""
         db_connection = self.db
         currsor = db_connection.cursor()
-        if UsersModel().check_if_admin():
-            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        else:
-            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        incident = currsor.fetchall()
+        currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        incident = currsor.fetchone()
         return incident
 
     def update_location(self, location, incidents_id):
@@ -139,7 +136,7 @@ class IncidentsModel():
     #     return False
 
     def update_status(self, status, incidents_id):
-        """ Query to update user comment details """
+        """ Query for admin to update status details """
         db_connection = self.db
         currsor = db_connection.cursor()
         currsor.execute(
