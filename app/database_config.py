@@ -20,10 +20,10 @@ def test_connection(testdb_url):
     return conn
 
 
-# def init_db():
-#     """ Initializes connection to the database """
-#     con = connection(db_url)
-#     return con
+def init_db():
+    """ Initializes connection to the database """
+    con = connection(db_url)
+    return con
 
 
 def test_init_db():
@@ -32,22 +32,22 @@ def test_init_db():
     return con
 
 
-# def create_tables():
-#     """ Create application database tables"""
-#     conn = connection(db_url)
-#     curr = conn.cursor()
-#     queries = tables()
+def create_tables():
+    """ Create application database tables"""
+    conn = connection(db_url)
+    curr = conn.cursor()
+    queries = tables()
 
-#     for query in queries:
-#         curr.execute(query)
+    for query in queries:
+        curr.execute(query)
 
-#     curr.execute("SELECT * FROM Users")
-#     conn.commit()
+    curr.execute("SELECT * FROM Users")
+    conn.commit()
 
 
 def create_test_tables():
     """ Create tables for testing """
-    conn = test_connection(testdb_url)
+    conn = connection(testdb_url)
     curr = conn.cursor()
     queries = tables()
 
