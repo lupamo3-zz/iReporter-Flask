@@ -1,6 +1,6 @@
 from datetime import datetime
 import psycopg2
-from app.database_config import test_init_db
+from app.database_config import init_db
 from app.api.v2.models.user_models import UsersModel
 from app.api.v2.views.authentication import SignIn
 
@@ -13,7 +13,7 @@ class IncidentsModel():
     """ Docstring for my incidents model """
 
     def __init__(self):
-        self.db = test_init_db()
+        self.db = init_db()
         self.status = "Draft"
         self.createdOn = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
 

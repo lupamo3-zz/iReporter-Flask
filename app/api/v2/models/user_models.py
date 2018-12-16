@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.database_config import test_init_db
+from app.database_config import init_db
 
 
 def get_timestamp():
@@ -13,7 +13,7 @@ class UsersModel():
     """ Docstring for my users model """
 
     def __init__(self):
-        self.db = test_init_db()
+        self.db = init_db()
         self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
 
     """ save our users and appendthem to the database """
