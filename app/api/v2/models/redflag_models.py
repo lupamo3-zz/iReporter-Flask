@@ -19,7 +19,7 @@ class IncidentsModel():
 
     """ save our data and appends to the database """
 
-    def save(self, comment, location, images, videos, createdBy, type):
+    def save(self, comment, location, images, videos, createdBy, incidentType):
 
         incident_data = {
             "comment": comment,
@@ -28,14 +28,14 @@ class IncidentsModel():
             "images": images,
             "location": location,
             "status": self.status,
-            "type": type,
+            "incidentType": incidentType,
             "videos": videos
         }
 
         query = """INSERT INTO incidents (location, comment, createdBy,
-                 status, createdOn, images, videos, type) VALUES (
+                 status, createdOn, images, videos, incidentType) VALUES (
                   %(location)s, %(comment)s, %(createdBy)s, %(status)s,
-                   %(createdOn)s, %(images)s, %(videos)s, %(type)s)"""
+                   %(createdOn)s, %(images)s, %(videos)s, %(incidentType)s)"""
 
         currsor = self.db.cursor()
         currsor.execute(query, incident_data)
@@ -48,17 +48,17 @@ class IncidentsModel():
 
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute("""SELECT incidents_id, type, status, comment,
+        currsor.execute("""SELECT incidents_id, incidentType, status, comment,
                     createdBy, createdOn, location,  images, videos
                     FROM incidents""")
         data = currsor.fetchall()
         response = []
 
         for key, records in enumerate(data):
-            incidents_id, type, status, comment, createdBy, createdOn, location, images, videos = records
+            incidents_id, incidentType, status, comment, createdBy, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
-                type=type,
+                incidentType=incidentType,
                 status=status,
                 comment=comment,
                 createdBy=createdBy,
@@ -74,7 +74,7 @@ class IncidentsModel():
         """ To delete redflag and incident details """
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute("DELETE FROM incidents WHERE incidents_id = %s;", (id,))
+        currsor.execute(f"DELETE FROM incidents WHERE incidents_id = {id};")
         db_connection.commit()
         return "Incident record has been deleted"
 
@@ -121,19 +121,16 @@ class IncidentsModel():
         )
         db_connection.commit()
 
-    # def check_existing_comment(self, comment, incidents_id):
-    #     """ To check comment isn't the same """
-    #     db_connection = self.db
-    #     currsor = db_connection.cursor()
-    #     cursor.execute(
-    #         """ SELECT * FROM Incidents 
-    #         WHERE comment = %s;""", (comment, incidents_id)
-    #     )
-    #     db_connection.commit()
-    #     comment = currsor.fetchone()
-    #     if comment:
-    #         return True
-    #     return False
+    def check_existing_comment(self, comment):
+        """ To check comment isn't the same """
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE comment=%s""", (comment, ))
+        comment = currsor.fetchone()
+        user_connection.commit()
+        if comment:
+            return True
+        False
 
     def update_status(self, status, incidents_id):
         """ Query for admin to update status details """
@@ -146,27 +143,15 @@ class IncidentsModel():
         )
         db_connection.commit()
 
-    # def validate_data(self, data):
-    #     """ User data validation """
-    #     try:
-    #         # check if Type has letters only
-    #         if not data['type'].strip().isalpha():
-    #             return "Type can only contain letters only"
-
-    #         # check if the incidentType is more than 7 characters
-    #         elif len(data['Type'].strip()) < 4:
-    #             return "Type must be more than 7 characters"
-
-    #         # check if the comment is more than 15 characters
-    #         elif len(data['comment'].strip()) < 3:
-    #             return "comment must be more than 3 characters"
-
-    #         # check if the location is more than 3 characters
-    #         elif len(data['location'].strip()) < 3:
-    #             return "location must be more than 3 characters"
-
-    #         else:
-    #             return "valid"
-    #     except Exception as error:
-    #         return "please provide all the fields,\
-    #          missing " + str(error)
+    def get_user_role(self, current_user):
+        """ Check if admin or not """
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
+            """SELECT isAdmin FROM Users WHERE user_id = %s;""", (id,)
+        )
+        get_user_role = cur.fetchone()[8]
+        print(get_user_role)
+        if get_user_role == 0:
+            return None
+        return get_user_role

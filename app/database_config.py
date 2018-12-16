@@ -94,7 +94,7 @@ def tables():
 
     incidentstables = """CREATE TABLE IF NOT EXISTS Incidents (
         incidents_id serial PRIMARY KEY NOT NULL,
-        type character varying(20) NOT NULL,
+        incidentType character varying(20) NOT NULL,
         status character varying(100) NOT NULL,
         comment character varying(200) NOT NULL,
         createdBy int NOT NULL REFERENCES Users(user_id) ,

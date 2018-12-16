@@ -18,23 +18,37 @@ class MyIncidents(Resource, IncidentsModel):
     def post(self):
         """ Create a redflag """
         data = request.get_json(force=True)
-        
-        if not data:
-            return {"message": "No data input!"}, 400
-        elif not data['location'] or not data["comment"]:
-            return {"message": "Ensure you have\
- filled all fields. i.e {} " .format(data)}, 400
+        try:
+            if not data:
+                return {"message": "Kindly input user info"}, 200
+            elif not data['images'] or not data['comment']:
+                return {"message":
+                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+            elif not data['createdBy'] or not data['videos']:
+                return {"message":
+                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+            elif not data['incidentType'] or not data['location']:
+                return {"message":
+                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+        except:
+            return {"KeyError": "Kindly check for missing fields"}, 404
+
+        if len(data['comment'].strip()) < 9:
+                return {"error": "comment must be more than 9 characters"}
+        elif len(data['location'].strip()) < 2:
+                return {"error" "location must be more than 2 characters"}
 
         comment = data['comment']
         location = data['location']
         images = data['images']
         videos = data['videos']
         createdBy = data['createdBy']
-        type = data['type']
+        incidentType = data['incidentType']
 
         incid_data = self.db.save(
-            comment, location, images, videos, createdBy, type
+            comment, location, images, videos, createdBy, incidentType
             )
+        
         return {"incident_created": incid_data,
                 "message": "Created redflag record"}, 201
 
@@ -78,13 +92,11 @@ class MyRecords(Resource, IncidentsModel):
     @jwt_required
     def delete(self, id):
         """ Allows you to delete a red-flag record """
-        current_user = get_jwt_identity()
         incidents = self.db.get_incident_by_id(id)
-        if incidents:
-            if incidents[4] == current_user:
-                res = 
+        if not incidents:
             return {"error": "Incident with that id not found"}, 404
-
+        current_user = get_jwt_identity()
+        print(current_user)
         deleting = self.db.delete_redflag(id)
 
         if deleting:
@@ -100,8 +112,6 @@ class MySpecificRecords(Resource, IncidentsModel):
     @jwt_required
     def patch(self, id):
         """ Makes the location editable by user """
-        current_user = get_jwt_identity()
-        print(current_user)
         get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
 
@@ -123,8 +133,12 @@ class MyCommentRecords(Resource, IncidentsModel):
     @jwt_required
     def patch(self, id):
         """ Allows you to make changes to redflag commments"""
-        get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
+        comment = data['comment']
+        check_comment = self.db.check_existing_comment(comment)
+        if check_comment:
+            return {"Message": "Comment already exists"}
+        get_by_id = self.db.get_incident_by_id(id=id)
 
         if get_by_id:
             self.db.update_comment(data['comment'], id)

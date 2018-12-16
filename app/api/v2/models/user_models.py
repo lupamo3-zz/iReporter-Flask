@@ -113,3 +113,13 @@ class UsersModel():
         username = request.get_json()['username']
         currsor.execute("SELECT * FROM users WHERE username='" + str(username) + "'")
         user_connection.commit()
+
+    def get_user_email(self, email):
+        """ Get user by email """
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE email=%s""", (email, ))
+        select_user = currsor.fetchone()
+        user_connection.commit()
+        if select_user:
+            return select_user
