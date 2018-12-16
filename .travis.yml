@@ -14,7 +14,7 @@ services:
   - postgresql
 
 before_script:
-  - psql -c "CREATE DATABASE test_database;" -U postgres
+  - psql -c "CREATE DATABASE ireporterflask;" -U postgres
   - psql -c "CREATE USER n WITH PASSWORD '123456' createdb;" -U postgres
 
 script:
