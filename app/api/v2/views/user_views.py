@@ -24,7 +24,7 @@ class MyUsers(Resource, UsersModel):
                 "data": all_users
             }), 200)
 
-        return {"error": "No Users found"}, 404
+        return {"Error": "No Users found"}, 404
 
 
 class MyAdmin(Resource, UsersModel):
@@ -41,7 +41,7 @@ class MyAdmin(Resource, UsersModel):
         current_user = get_jwt_identity()
         app_users = self.db.get_user_id(id)
         if not app_users:
-            return {"error": "User with that id not found"}, 404
+            return {"Error": "User with that id not found"}, 404
         delete_user = self.db.delete_user(id)
 
         if delete_user:
@@ -58,4 +58,4 @@ class MyAdmin(Resource, UsersModel):
                 "data": app_users
             }), 200)
 
-        return {"error": "User id {} id not found" .format(id)}, 200
+        return {"Error": "User id {} id not found" .format(id)}, 200

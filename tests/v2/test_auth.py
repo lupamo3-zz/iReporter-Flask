@@ -21,8 +21,7 @@ class TestAuthorization(BaseTestClass):
         """Test post success"""
         response = self.test_user_signup()
         result = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(result["message"], "User Andela1 created, now login ")
+        self.assertEqual(result["message"], "User testuser created, now login ")
 
     def test_user_login(self):
         """ Test that registered users can login """
@@ -34,7 +33,7 @@ class TestAuthorization(BaseTestClass):
         )
         result = json.loads(login_res.data.decode())
         self.assertEqual(login_res.status_code, 200)
-        self.assertEqual(result["data"], "Logged in as Andela1")
+        self.assertEqual(result["data"], "Logged in as testuser")
 
     def test_existing_username(self):
         """ Check if users are already registered """
@@ -46,7 +45,7 @@ class TestAuthorization(BaseTestClass):
         )
         self.assertEqual(second_res.status_code, 400)
         result = json.loads(second_res.data.decode())
-        self.assertEqual(result["message"], "User Andela1 already exists")
+        self.assertEqual(result["message"], "User Andela already exists")
 
     def test_unregistered_username(self):
         """ Check what happens when unregistered user tries to login """
@@ -70,7 +69,7 @@ class TestAuthorization(BaseTestClass):
         )
         result = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 401)
-
+        
 
 if __name__ == "__main__":
     unittest.main()

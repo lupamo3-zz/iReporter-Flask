@@ -10,7 +10,7 @@ class TestRedflags(BaseTestClass):
 
     def test_get_all_records(self):
         """ Test if API endpoint is able to get all records correctly """
-        response = self.client.post(
+        post = self.client.post(
             '/api/v2/incidents',
             data=json.dumps(self.data),
             headers={"content-type": "application/json",
@@ -60,8 +60,6 @@ class TestRedflags(BaseTestClass):
             '/api/v2/incidents/1',
             headers={'Authorization': 'Bearer ' + self.auth_token})
         self.assertEqual(res.status_code, 200)
-        result = json.loads(res.data.decode())
-        self.assertEqual(result["id"], 1)
 
     def test_record_without_comment(self):
         """ Test if API can post with one field not filled"""
@@ -71,6 +69,7 @@ class TestRedflags(BaseTestClass):
             headers={"content-type": "application/json",
                      'authorization': 'Bearer ' + self.auth_token}
         )
+        print(response)
         self.assertEqual(response.status_code, 400)
 
     def test_creation_record_empty_fields(self):
@@ -83,7 +82,7 @@ class TestRedflags(BaseTestClass):
         )
         self.assertEqual(response.status_code, 400)
         result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "No data input!")
+        self.assertEqual(result["message"], "Kindly input user info")
 
     def test_no_record_to_delete(self):
         """Test if API can delete existing records """
