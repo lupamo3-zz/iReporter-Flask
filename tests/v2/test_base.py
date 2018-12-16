@@ -4,7 +4,7 @@ import json
 import pytest
 
 from app import create_app
-from app.database_config import test_init_db
+from app.database_config import init_db
 
 
 class BaseTestClass(unittest.TestCase):
