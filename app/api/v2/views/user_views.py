@@ -1,7 +1,8 @@
 from flask import jsonify, make_response
 from flask_restful import Resource, request
-from flask_jwt_extended import jwt_required
-from app.api.v2.views.validations import Validations
+from flask_jwt_extended import (
+    jwt_required, get_jwt_identity
+)
 from app.api.v2.models.user_models import UsersModel
 
 
@@ -37,6 +38,7 @@ class MyAdmin(Resource, UsersModel):
     @jwt_required
     def delete(self, id):
         """ Docstring for deleting users"""
+        current_user = get_jwt_identity()
         app_users = self.db.get_user_id(id)
         if not app_users:
             return {"error": "User with that id not found"}, 404
@@ -44,7 +46,7 @@ class MyAdmin(Resource, UsersModel):
 
         if delete_user:
             return {"id": id, "message": delete_user}, 200
-
+ 
     @jwt_required
     def get(self, id):
         """ Admin get a specif user by id """

@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import psycopg2
 from app.database_config import test_init_db
 from app.api.v2.models.user_models import UsersModel
 from app.api.v2.views.authentication import SignIn
@@ -19,7 +19,7 @@ class IncidentsModel():
 
     """ save our data and appends to the database """
 
-    def save(self, comment, location, images, videos, createdBy, type):
+    def save(self, comment, location, images, videos, createdBy, incidentType):
 
         incident_data = {
             "comment": comment,
@@ -28,14 +28,14 @@ class IncidentsModel():
             "images": images,
             "location": location,
             "status": self.status,
-            "type": type,
+            "incidentType": incidentType,
             "videos": videos
         }
 
         query = """INSERT INTO incidents (location, comment, createdBy,
-                 status, createdOn, images, videos, type) VALUES (
+                 status, createdOn, images, videos, incidentType) VALUES (
                   %(location)s, %(comment)s, %(createdBy)s, %(status)s,
-                   %(createdOn)s, %(images)s, %(videos)s, %(type)s)"""
+                   %(createdOn)s, %(images)s, %(videos)s, %(incidentType)s)"""
 
         currsor = self.db.cursor()
         currsor.execute(query, incident_data)
@@ -48,17 +48,17 @@ class IncidentsModel():
 
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute("""SELECT incidents_id, type, status, comment,
+        currsor.execute("""SELECT incidents_id, incidentType, status, comment,
                     createdBy, createdOn, location,  images, videos
                     FROM incidents""")
         data = currsor.fetchall()
         response = []
 
         for key, records in enumerate(data):
-            incidents_id, type, status, comment, createdBy, createdOn, location, images, videos = records
+            incidents_id, incidentType, status, comment, createdBy, createdOn, location, images, videos = records
             datar = dict(
                 incidents_id=int(incidents_id),
-                type=type,
+                incidentType=incidentType,
                 status=status,
                 comment=comment,
                 createdBy=createdBy,
@@ -74,7 +74,7 @@ class IncidentsModel():
         """ To delete redflag and incident details """
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute("DELETE FROM incidents WHERE incidents_id = %s", (id,))
+        currsor.execute(f"DELETE FROM incidents WHERE incidents_id = {id};")
         db_connection.commit()
         return "Incident record has been deleted"
 
@@ -95,11 +95,8 @@ class IncidentsModel():
         """ Get redflag or interevention details by id"""
         db_connection = self.db
         currsor = db_connection.cursor()
-        if UsersModel().check_if_admin():
-            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        else:
-            currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        incident = currsor.fetchall()
+        currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
+        incident = currsor.fetchone()
         return incident
 
     def update_location(self, location, incidents_id):
@@ -124,8 +121,19 @@ class IncidentsModel():
         )
         db_connection.commit()
 
+    def check_existing_comment(self, comment):
+        """ To check comment isn't the same """
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE comment=%s""", (comment, ))
+        comment = currsor.fetchone()
+        user_connection.commit()
+        if comment:
+            return True
+        False
+
     def update_status(self, status, incidents_id):
-        """ Query to update user comment details """
+        """ Query for admin to update status details """
         db_connection = self.db
         currsor = db_connection.cursor()
         currsor.execute(
@@ -134,3 +142,16 @@ class IncidentsModel():
             WHERE incidents_id=%s""", (status, incidents_id)
         )
         db_connection.commit()
+
+    def get_user_role(self, current_user):
+        """ Check if admin or not """
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
+            """SELECT isAdmin FROM Users WHERE user_id = %s;""", (id,)
+        )
+        get_user_role = cur.fetchone()[8]
+        print(get_user_role)
+        if get_user_role == 0:
+            return None
+        return get_user_role

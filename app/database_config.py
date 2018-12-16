@@ -1,9 +1,11 @@
 import os
 import psycopg2
-
+from instance.config import app_config
+from werkzeug.security import check_password_hash, generate_password_hash
 
 db_url = os.getenv('DATABASE_URL')
 testdb_url = os.getenv('TESTDATABASE_URL')
+password = generate_password_hash("andela23")
 
 
 def connection(db_url):
@@ -38,6 +40,14 @@ def create_tables():
 
     for query in queries:
         curr.execute(query)
+
+    curr.execute("INSERT INTO Users (firstname, lastname, othernames,\
+        username, email, phonenumber, registered, password, isAdmin)\
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                 ("Norber", "Anjich", "Lupam", "andel",
+                  "thanos@mail.com", "071724577", 
+                  "Sat, 15 Dec 2018 08:00:29 GMT", password, True))
+    curr.execute("SELECT * FROM Users")
     conn.commit()
 
 
@@ -49,8 +59,15 @@ def create_test_tables():
 
     for query in queries:
         curr.execute(query)
+
+    curr.execute("INSERT INTO Users (firstname, lastname, othernames,\
+        username, email, phonenumber, registered, password, isAdmin)\
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                 ("Norbert", "Anjichi", "Lupamo", "andelar",
+                  "thans@gmail.com", "071724577", 
+                  "Sat, 15 Dec 2018 08:00:28 GMT", password, True))
+    curr.execute("SELECT * FROM Users")
     conn.commit()
-    curr.close()
 
 
 def destroy_tables():
@@ -60,6 +77,8 @@ def destroy_tables():
 
 def tables():
     """ Create collumns on the database tables """
+    drop_users = """DROP TABLE IF EXISTS Users CASCADE"""
+    drop_incidents = """DROP TABLE IF EXISTS Incidents CASCADE"""
     userstables = """CREATE TABLE IF NOT EXISTS Users (
         user_id serial PRIMARY KEY NOT NULL,
         firstname character varying(50) NOT NULL,
@@ -69,13 +88,13 @@ def tables():
         email character varying(50) UNIQUE,
         phonenumber character varying(50) UNIQUE,
         registered timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
-        isAdmin boolean NOT NULL DEFAULT FALSE,
+        isAdmin boolean NOT NULL,
         password character varying(1250) NOT NULL
     )"""
 
     incidentstables = """CREATE TABLE IF NOT EXISTS Incidents (
         incidents_id serial PRIMARY KEY NOT NULL,
-        type character varying(20) NOT NULL,
+        incidentType character varying(20) NOT NULL,
         status character varying(100) NOT NULL,
         comment character varying(200) NOT NULL,
         createdBy int NOT NULL REFERENCES Users(user_id) ,
@@ -85,5 +104,5 @@ def tables():
         videos character varying(200) NOT NULL
     )"""
 
-    queries = [userstables, incidentstables]
+    queries = [drop_users, drop_incidents, userstables, incidentstables]
     return queries
