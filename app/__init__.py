@@ -46,4 +46,11 @@ def create_app(config_name):
             "message": "The server encountered an internal error."
         }), 500)
 
+    @app.errorhandler(405)
+    def internal_server_error(error):
+        return make_response(jsonify({
+            "status": 405,
+            "message": "Hey there. Please check the URL again for this request."
+        }), 405)
+
     return app

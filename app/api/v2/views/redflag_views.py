@@ -4,6 +4,7 @@ from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api.v2.models.redflag_models import IncidentsModel
 from app.api.v2.models.user_models import UsersModel
+import smtplib
 
 UsersModel = UsersModel()
 
