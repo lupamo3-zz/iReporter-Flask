@@ -62,13 +62,14 @@ class BaseTestClass(unittest.TestCase):
             "firstname": "Anjichi",
             "lastname": "Lupamo",
             "othernames": "R",
-            "username": "Andela1",
+            "username": "testuser",
             "email": "andela@andela.andela",
             "phonenumber": "0717245777",
-            "password": "Eatlivecode3@"
+            "password": "Eatlivecode3@",
+            "isAdmin": False
         }
         self.login = {
-            "username": "Andela1",
+            "username": "testuser",
             "password": "Eatlivecode3@"
         }
         self.invalid = {
@@ -83,10 +84,11 @@ class BaseTestClass(unittest.TestCase):
             "firstname": "Anjichi",
             "lastname": "Lupamo",
             "othernames": "R",
-            "username": "Andela1",
+            "username": "Andela",
             "email": "andela@andela.andela",
             "phonenumber": "0717245777",
-            "password": "Eatlivecode1@"
+            "password": "Eatlivecode1@",
+            "isAdmin": False
         }
 
         res = self.client.post(
@@ -100,7 +102,7 @@ class BaseTestClass(unittest.TestCase):
             data=json.dumps(self.token_login),
             headers={"content-type": "application/json"}
         )
-        response = json.loads(login_res.data)
+        response = json.loads(login_res.data.decode())
         self.auth_token = response["access_token"]
         
     def tearDown(self):

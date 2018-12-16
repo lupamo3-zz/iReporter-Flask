@@ -107,11 +107,11 @@ class MyRecords(Resource, IncidentsModel):
         if not incidents:
             return {"error": "Incident with that id not found"}, 404
         else:
-            created_by = self.db.get_created_by(id)
             current_user = get_jwt_identity()
+            created_by = self.db.get_created_by(current_user)
             print(current_user)
             print(created_by)
-            if created_by != current_user:
+            if created_by == current_user:
                 delete = self.db.delete_redflag(id)
                 return {"message": delete}, 200
             return {"message": "You are not allowed to perform this action"}, 403
@@ -128,14 +128,17 @@ class MySpecificRecords(Resource, IncidentsModel):
         """ Makes the location editable by user """
         get_by_id = self.db.get_incident_by_id(id=id)
         data = request.get_json(force=True)
-
-        if get_by_id:
-            self.db.update_location(data['location'], id)
-            return {
-                "New Location": data['location'],
-                "message": "Updated location successfully",
-            }, 200
-        return {"message": " Incident not found"}, 404
+        current_user = get_jwt_identity()
+        created_by = self.db.get_created_by(current_user)
+        if created_by == current_user:
+            if get_by_id:
+                self.db.update_location(data['location'], id)
+                return {
+                    "New Location": data['location'],
+                    "message": "Updated location successfully",
+                }, 200
+            return {"message": " Incident not found"}, 404
+        return {"message": "You are not allowed to perform this action"}, 403
 
 
 class MyCommentRecords(Resource, IncidentsModel):

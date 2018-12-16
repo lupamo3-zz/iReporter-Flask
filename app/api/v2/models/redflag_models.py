@@ -154,12 +154,13 @@ class IncidentsModel():
 
         return admin_status
 
-    def get_created_by(self, id):
+    def get_created_by(self, current_user):
         """ Get who created """
         db_connection = self.db
         currsor = db_connection.cursor()
-        currsor.execute(f"SELECT createdBy FROM Incidents WHERE incidents_id = {id};")
-        created_by = currsor.fetchone()[0]
-        if not created_by:
-            return None
+        currsor.execute(
+            """SELECT * FROM Users WHERE username = %s;""", (current_user,)
+        )
+        created_by = currsor.fetchall()[0][4]
+
         return created_by
