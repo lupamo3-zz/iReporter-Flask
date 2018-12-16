@@ -41,12 +41,6 @@ def create_tables():
     for query in queries:
         curr.execute(query)
 
-    curr.execute("INSERT INTO Users (firstname, lastname, othernames,\
-        username, email, phonenumber, registered, password, isAdmin)\
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                 ("Norber", "Anjich", "Lupam", "andel",
-                  "thanos@mail.com", "071724577", 
-                  "Sat, 15 Dec 2018 08:00:29 GMT", password, True))
     curr.execute("SELECT * FROM Users")
     conn.commit()
 
@@ -60,12 +54,6 @@ def create_test_tables():
     for query in queries:
         curr.execute(query)
 
-    curr.execute("INSERT INTO Users (firstname, lastname, othernames,\
-        username, email, phonenumber, registered, password, isAdmin)\
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
-                 ("Norbert", "Anjichi", "Lupamo", "andelar",
-                  "thans@gmail.com", "071724577", 
-                  "Sat, 15 Dec 2018 08:00:28 GMT", password, True))
     curr.execute("SELECT * FROM Users")
     conn.commit()
 
@@ -77,8 +65,6 @@ def destroy_tables():
 
 def tables():
     """ Create collumns on the database tables """
-    drop_users = """DROP TABLE IF EXISTS Users CASCADE"""
-    drop_incidents = """DROP TABLE IF EXISTS Incidents CASCADE"""
     userstables = """CREATE TABLE IF NOT EXISTS Users (
         user_id serial PRIMARY KEY NOT NULL,
         firstname character varying(50) NOT NULL,
@@ -88,7 +74,7 @@ def tables():
         email character varying(50) UNIQUE,
         phonenumber character varying(50) UNIQUE,
         registered timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
-        isAdmin boolean NOT NULL,
+        isAdmin boolean NOT NULL DEFAULT False,
         password character varying(1250) NOT NULL
     )"""
 
@@ -104,5 +90,5 @@ def tables():
         videos character varying(200) NOT NULL
     )"""
 
-    queries = [drop_users, drop_incidents, userstables, incidentstables]
+    queries = [userstables, incidentstables]
     return queries

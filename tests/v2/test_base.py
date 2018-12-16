@@ -21,11 +21,11 @@ class BaseTestClass(unittest.TestCase):
             "comment": "I am doing it",
             "createdBy": 1,
             "createdOn": "2018-12-12 15:45:07",
-            "images": "images",
+            "images": "images.jpg",
             "location": "naironi",
             "status": "Draft",
-            "type": "Redflags",
-            "videos": "videos"
+            "incidentType": "Redflag",
+            "videos": "videos.mp4"
         }
 
         self.no_input = {
@@ -36,23 +36,26 @@ class BaseTestClass(unittest.TestCase):
             "lastname": "Lupamo",
             "othernames": "R",
             "username": "Andela",
-            "email": "andela@andela.Kenya",
+            "email": "andela@andela.com",
             "phonenumber": "0724716026",
-            "password": "Eatlivecode"
+            "password": "Eatlivecode2@",
+            "isAdmin": False
         }
 
         self.no_comment = {
-            "createdOn": "2018-11-29 05:21:37",
-            "createdBy": "Norbert",
-            "location": "Mount Sinai",
-            "status": "There is a bush on fire",
             "comment": "",
-            "id": 1
+            "createdBy": 1,
+            "createdOn": "2017-12-12 15:45:07",
+            "images": "images.jpg",
+            "location": "naironi",
+            "status": "Draft",
+            "incidentType": "Redflag",
+            "videos": "videos.mp4"    
         }
 
         self.token_login = {
             "username": "Andela",
-            "password": "Eatlivecode"
+            "password": "Eatlivecode2@"
         }
 
         self.auth = {
@@ -62,19 +65,19 @@ class BaseTestClass(unittest.TestCase):
             "username": "Andela1",
             "email": "andela@andela.andela",
             "phonenumber": "0717245777",
-            "password": "Eatlivecode"
+            "password": "Eatlivecode3@"
         }
         self.login = {
             "username": "Andela1",
-            "password": "Eatlivecode"
+            "password": "Eatlivecode3@"
         }
         self.invalid = {
             "username": "Andela1",
-            "password": "Eatlivecod"
+            "password": "Eatlivecod4@"
         }
         self.unregistered = {
             'username': 'ramsaybolton',
-            'password': 'dark'
+            'password': 'darkthoughts@1'
         }
         self.duplicate = {
             "firstname": "Anjichi",
@@ -83,7 +86,7 @@ class BaseTestClass(unittest.TestCase):
             "username": "Andela1",
             "email": "andela@andela.andela",
             "phonenumber": "0717245777",
-            "password": "Eatlivecode"
+            "password": "Eatlivecode1@"
         }
 
         res = self.client.post(
@@ -91,15 +94,15 @@ class BaseTestClass(unittest.TestCase):
             data=json.dumps(self.auth_signup),
             headers={"content-type": "application/json"}
         )
+
         login_res = self.client.post(
             '/api/v2/login',
             data=json.dumps(self.token_login),
             headers={"content-type": "application/json"}
         )
         response = json.loads(login_res.data)
-        print(response)
         self.auth_token = response["access_token"]
-
+        
     def tearDown(self):
 
         dbconn = self.db

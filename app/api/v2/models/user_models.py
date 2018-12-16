@@ -15,11 +15,10 @@ class UsersModel():
     def __init__(self):
         self.db = test_init_db()
         self.registered = datetime.now().strftime(("%Y-%m-%d %H:%M:%S"))
-        self.isAdmin = False
 
     """ save our users and appendthem to the database """
     def save(self, firstname, lastname, othernames, username, email,
-             phonenumber, password):
+             phonenumber, password, isAdmin):
         try:
             user_data = {
                 "firstname": firstname,
@@ -30,7 +29,7 @@ class UsersModel():
                 "phonenumber": phonenumber,
                 "registered": self.registered,
                 "password": password,
-                "isAdmin": self.isAdmin
+                "isAdmin": isAdmin
             }
         except KeyError:
             return False, "Missing fields"

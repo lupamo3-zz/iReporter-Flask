@@ -58,13 +58,14 @@ class SignUp(Resource, UsersModel):
                 return {"error": "phone number must have 10 characters"}, 400
         else:
 
-            firstname = data['firstname']
-            lastname = data['lastname']
-            othernames = data['othernames']
-            username = data['username']
-            email = data['email']
+            firstname = data['firstname'].lower()
+            lastname = data['lastname'].lower()
+            othernames = data['othernames'].lower()
+            username = data['username'].lower()
+            email = data['email'].lower()
             phonenumber = data['phonenumber']
             password = generate_password_hash(data['password'])
+            isAdmin = data['isAdmin']
 
             user = self.db.get_username_user(username)
             print(user)
@@ -78,7 +79,7 @@ class SignUp(Resource, UsersModel):
                     return {"message": "A user with the email already exists."}
 
                 sign_up = self.db.save(firstname, lastname, othernames, username,
-                                    email, phonenumber, password)
+                                    email, phonenumber, password, isAdmin)
                 if sign_up:
                     return {"message":
                             "User {} created, now login ".format(username)}, 201
@@ -108,7 +109,7 @@ class SignIn(Resource, UsersModel):
             return {"Message":
                     "Kindly input Username and Password details"}, 200
 
-        username = login_data['username']
+        username = login_data['username'].lower()
         password = generate_password_hash(login_data['password'])
         user = self.db.get_username_user(username)
 

@@ -148,10 +148,18 @@ class IncidentsModel():
         db_connection = self.db
         currsor = db_connection.cursor()
         currsor.execute(
-            """SELECT isAdmin FROM Users WHERE user_id = %s;""", (id,)
+            """SELECT * FROM Users WHERE username = %s;""", (current_user,)
         )
-        get_user_role = cur.fetchone()[8]
-        print(get_user_role)
-        if get_user_role == 0:
+        admin_status = currsor.fetchall()[0][8]
+
+        return admin_status
+
+    def get_created_by(self, id):
+        """ Get who created """
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(f"SELECT createdBy FROM Incidents WHERE incidents_id = {id};")
+        created_by = currsor.fetchone()[0]
+        if not created_by:
             return None
-        return get_user_role
+        return created_by
