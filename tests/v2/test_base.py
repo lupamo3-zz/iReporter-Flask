@@ -15,7 +15,7 @@ class BaseTestClass(unittest.TestCase):
 
         self.app = create_app(config_name="development")
         self.client = self.app.test_client()
-        self.db = test_init_db()
+        self.db = init_db()
 
         self.data = {
             "comment": "I am doing it",
