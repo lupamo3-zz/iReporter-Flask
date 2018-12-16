@@ -1,3 +1,4 @@
+africastalking==1.1.5
 aniso8601==4.0.1
 astroid==2.1.0
 atomicwrites==1.2.1
@@ -5,7 +6,9 @@ attrs==18.2.0
 autoenv==1.0.0
 autopep8==1.4.3
 bcrypt==3.1.4
+certifi==2018.11.29
 cffi==1.11.5
+chardet==3.0.4
 Click==7.0
 coverage==4.5.2
 Flask==1.0.2
@@ -13,6 +16,7 @@ Flask-Bcrypt==0.7.1
 Flask-JWT-Extended==3.13.1
 Flask-RESTful==0.3.6
 gunicorn==19.9.0
+idna==2.7
 isort==4.3.4
 itsdangerous==1.1.0
 Jinja2==2.10
@@ -35,8 +39,10 @@ pytest==4.0.1
 pytest-cov==2.6.0
 python-dotenv==0.9.1
 pytz==2018.7
+requests==2.20.1
 schema==0.6.8
 six==1.11.0
 typed-ast==1.1.0
+urllib3==1.24.1
 Werkzeug==0.14.1
 wrapt==1.10.11
