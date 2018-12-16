@@ -127,12 +127,6 @@ class TestRedflags(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn("Redflag not found", str(res.data))
 
-    # def test_none_existent_record(self):
-    #     """ Test if API is able to get non-existent record"""
-    #     response = self.client.get('/api/v1/incidents/20')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn("Redflag with that id not found", str(response.data))
-
     def tearDown(self):
         """Teardown all initialized variables"""
         pass
