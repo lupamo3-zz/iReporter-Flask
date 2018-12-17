@@ -4,7 +4,7 @@ import json
 import pytest
 
 from app import create_app
-from app.database_config import test_init_db
+from app.database_config import init_db
 
 
 class BaseTestClass(unittest.TestCase):
@@ -104,7 +104,7 @@ class BaseTestClass(unittest.TestCase):
         )
         response = json.loads(login_res.data.decode())
         self.auth_token = response["access_token"]
-        
+       
     def tearDown(self):
 
         dbconn = self.db

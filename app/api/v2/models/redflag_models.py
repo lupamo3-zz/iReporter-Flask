@@ -164,3 +164,13 @@ class IncidentsModel():
         created_by = currsor.fetchall()[0][4]
 
         return created_by
+
+    def get_email_update(self, id):
+        """ Get email after a certain update """
+        db_connection = self.db
+        currsor = db_connection.cursor()
+        currsor.execute(
+            """SELECT createdBy FROM Incidents WHERE incidents_id = %s;""", (id,)
+        )
+        data = currsor.fetchone()
+        print(data)
