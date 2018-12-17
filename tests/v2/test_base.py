@@ -35,8 +35,8 @@ class BaseTestClass(unittest.TestCase):
             "firstname": "Anjichi",
             "lastname": "Lupamo",
             "othernames": "R",
-            "username": "Andela",
-            "email": "andela@andela.com",
+            "username": "testuser",
+            "email": "test@test.com",
             "phonenumber": "0724716026",
             "password": "Eatlivecode2@",
             "isAdmin": False
@@ -54,22 +54,21 @@ class BaseTestClass(unittest.TestCase):
         }
 
         self.token_login = {
-            "username": "Andela",
+            "username": "testuser",
             "password": "Eatlivecode2@"
         }
-
         self.auth = {
             "firstname": "Anjichi",
             "lastname": "Lupamo",
-            "othernames": "R",
-            "username": "testuser",
-            "email": "andela@andela.andela",
-            "phonenumber": "0717245777",
+            "othernames": "Right",
+            "username": "testusr",
+            "email": "test@tst.com",
+            "phonenumber": "0717245111",
             "password": "Eatlivecode3@",
             "isAdmin": False
         }
         self.login = {
-            "username": "testuser",
+            "username": "testusr",
             "password": "Eatlivecode3@"
         }
         self.invalid = {
@@ -83,11 +82,11 @@ class BaseTestClass(unittest.TestCase):
         self.duplicate = {
             "firstname": "Anjichi",
             "lastname": "Lupamo",
-            "othernames": "R",
-            "username": "Andela",
-            "email": "andela@andela.andela",
-            "phonenumber": "0717245777",
-            "password": "Eatlivecode1@",
+            "othernames": "Right",
+            "username": "testusr",
+            "email": "test@tst.com",
+            "phonenumber": "0717245111",
+            "password": "Eatlivecode3@",
             "isAdmin": False
         }
 
@@ -104,7 +103,7 @@ class BaseTestClass(unittest.TestCase):
         )
         response = json.loads(login_res.data.decode())
         self.auth_token = response["access_token"]
-       
+
     def tearDown(self):
 
         dbconn = self.db
