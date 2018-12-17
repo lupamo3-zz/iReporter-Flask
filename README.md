@@ -53,7 +53,7 @@ pip install -r requirements.txt
 
 ### Test the application on Postman
 ## Test The API end-points
-#### Run [i-Reporter] (https://ireporterflask-api-heroku.herokuapp.com/) on your postman to test the URLs
+ - Run [iReporter](https://ireporterflask-api-heroku.herokuapp.com/) on your postman to test the URLs
 
 or use:
 
