@@ -12,7 +12,7 @@ class TestRedflags(unittest.TestCase):
     def setUp(self):
         """Defines the test variables """
 
-        self.app = create_app(config_name="testing")
+        self.app = create_app(config_name="development")
         self.client = self.app.test_client()
         self.data = {
             "createdOn": "2018-11-29 05:21:37",

@@ -6,10 +6,6 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 
-# env:
-# - TESTDATABASE_URL="dbname='ireporter_test' host='localhost' port='5432' user='n' password='123456'"
-# - APP_SETTINGS="development"
-
 services:
   - postgresql
 

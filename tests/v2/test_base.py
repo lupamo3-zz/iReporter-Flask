@@ -104,7 +104,7 @@ class BaseTestClass(unittest.TestCase):
         )
         response = json.loads(login_res.data.decode())
         self.auth_token = response["access_token"]
-        
+       
     def tearDown(self):
 
         dbconn = self.db

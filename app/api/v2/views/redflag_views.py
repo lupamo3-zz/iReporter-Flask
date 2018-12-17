@@ -109,11 +109,10 @@ class MyRecords(Resource, IncidentsModel):
         else:
             current_user = get_jwt_identity()
             created_by = self.db.get_created_by(current_user)
-            print(current_user)
-            print(created_by)
             if created_by == current_user:
                 delete = self.db.delete_redflag(id)
-                return {"message": delete}, 200
+
+                return {"message": "delete"}, 200
             return {"message": "You are not allowed to perform this action"}, 403
 
 
