@@ -76,7 +76,7 @@ class SignUp(Resource, UsersModel):
             else:
                 verify_email = self.db.get_user_email(email)
                 if verify_email:
-                    return {"message": "A user with the email already exists."}
+                    return {"message": "A user with the email already exists."}, 400
 
                 sign_up = self.db.save(firstname, lastname, othernames, username,
                                     email, phonenumber, password, isAdmin)
