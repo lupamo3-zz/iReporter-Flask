@@ -7,7 +7,7 @@ An application that allows users to report incidences of corruption(Redflags) an
 
 User
 
-[Click here to access API documentation](https://documenter.getpostman.com/view/4927537/Rzfgoozo)
+[Click here to access API documentation](https://documenter.getpostman.com/view/4927537/RzfmE6y7)
 
 ### Prerequisites
 
@@ -53,7 +53,7 @@ pip install -r requirements.txt
 
 ### Test the application on Postman
 ## Test The API end-points
-#### Use this URl [https://ireporterflask-api-heroku.herokuapp.com/] on your postman to test the URLs
+#### Run [i-Reporter] (https://ireporterflask-api-heroku.herokuapp.com/) on your postman to test the URLs
 
 or use:
 
