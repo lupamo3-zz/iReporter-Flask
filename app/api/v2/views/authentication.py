@@ -24,36 +24,44 @@ class SignUp(Resource, UsersModel):
                 return {"message": "Kindly input user info"}, 200
             elif not data['firstname'] or not data['lastname']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all fields {}".format(data)}, 400
             elif not data['othernames'] or not data['username']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all fields {}".format(data)}, 400
             elif not data['email'] or not data['phonenumber']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all fields {}".format(data)}, 400
             elif not data['password']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all fields {}".format(data)}, 400
         except:
             return {"KeyError": "Kindly check for missing fields"}, 404
 
-        if not re.match(r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", data['email']):
-            return make_response(jsonify({'error': 'Provide a valid email address'}), 400)
+        if not re.match(
+                r"(^[a-zA-z0-9_.]+@[a-zA-z0-9-]+\.[a-z]+$)", data['email']):
+            return {'error': 'Provide a valid email address'}, 400
 
         elif not str.isalpha(data['username']):
-            return make_response(jsonify({'error': 'All characters in the Username string can only contain alphabets'}),
-                                 400)
+            return {'error':
+                    'Username can only contain alphabets'}, 400
 
         if len(data['password']) < 7:
-            return make_response(jsonify({'error': 'Password must be at least 8 characters long!'}), 400)
+            return {'error':
+                    'Password must be at least 8 characters long!'}, 400
         elif re.search('[0-9]', (data['password'])) is None:
-            return make_response(jsonify({'error': 'Password must have at least one number in it!'}), 400)
+            return {'error':
+                    'Password must have at least one number in it!'}, 400
         elif re.search('[A-Z]', (data['password'])) is None:
-            return make_response(jsonify({'error': 'Password must have at least one capital letter in it!'}), 400)
+            return {'error':
+                    'Password must have at least one capital letter!'}, 400
         elif re.search('[a-z]', (data['password'])) is None:
-            return make_response(jsonify({'error': 'Password must have at least one alphabet letter in it!'}), 400)
-        elif re.search('[!,#,$,%,&,*,+,-,<,=,>,?,@,^,_,{,|,},~,]', (data['password'])) is None:
-            return make_response(jsonify({'error': 'Password must have at least a special character in it!'}), 400)
+            return {'error':
+                    'Password must have at least one alphabet letter!'}, 400
+        elif re.search(
+            '[!,#,$,%,&,*,+,-,<,=,>,?,@,^,_,{,|,},~,]',
+                (data['password'])) is None:
+            return {'error':
+                    'Password must have at least a special character!'}, 400
         elif not len(data['phonenumber'].strip()) == 10:
                 return {"error": "phone number must have 10 characters"}, 400
         else:
@@ -76,15 +84,23 @@ class SignUp(Resource, UsersModel):
             else:
                 verify_email = self.db.get_user_email(email)
                 if verify_email:
-                    return {"message": "A user with the email already exists."}, 400
+                    return {"message":
+                            "A user with the email already exists."}, 400
 
-                sign_up = self.db.save(firstname, lastname, othernames, username,
-                                    email, phonenumber, password, isAdmin)
+                verify_cell_number = self.db.get_user_cellnumber(phonenumber)
+                if verify_cell_number:
+                    return {"message":
+                            "A user with the phonenumber already exists"}, 400
+
+                sign_up = self.db.save(
+                    firstname, lastname, othernames,
+                    username, email, phonenumber, password, isAdmin)
                 if sign_up:
                     return {"message":
-                            "User {} created, now login ".format(username)}, 201
+                            "User {} created login ".format(username)}, 201
 
-                return {"Message": "User creation not successful, check data"}, 400
+                return {"Message":
+                        "User creation unsuccessful, check data"}, 400
 
 
 class SignIn(Resource, UsersModel):
@@ -101,10 +117,10 @@ class SignIn(Resource, UsersModel):
                 return {"message": "Kindly input user info"}, 200
             elif not login_data['username'] or not login_data['password']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(login_data)}
+                        "Ensure youve filled all fields {}".format(login_data)}
         except:
             return {"KeyError": "Kindly check for missing fields"}, 404
-            
+
         if not login_data:
             return {"Message":
                     "Kindly input Username and Password details"}, 200

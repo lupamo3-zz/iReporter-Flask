@@ -122,3 +122,13 @@ class UsersModel():
         user_connection.commit()
         if select_user:
             return select_user
+
+    def get_user_cellnumber(self, phonenumber):
+        """ Get user by cellnumber """
+        user_connection = self.db
+        currsor = user_connection.cursor()
+        currsor.execute("""SELECT * FROM users WHERE phonenumber=%s""", (phonenumber, ))
+        select_user = currsor.fetchone()
+        user_connection.commit()
+        if select_user:
+            return select_user
