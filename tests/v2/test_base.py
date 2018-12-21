@@ -39,7 +39,7 @@ class BaseTestClass(unittest.TestCase):
             "email": "test@test.com",
             "phonenumber": "0724716026",
             "password": "Eatlivecode2@",
-            "isAdmin": False
+            "isAdmin": True
         }
 
         self.no_comment = {
