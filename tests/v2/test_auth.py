@@ -130,5 +130,41 @@ class TestAuthorization(BaseTestClass):
         )
         self.assertEqual(res.status_code, 404)
 
+    # Test User-Views
+    def test_get_users(self):
+        """ Get all users """
+        self.test_user_signup()
+        res = self.client.get(
+            'api/v2/users',
+            headers={'authorization': 'Bearer ' + self.auth_token})
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_users_by_id(self):
+        """ Get registered users by id """
+        self.test_user_signup()
+        res = self.client.get(
+            'api/v2/users/1',
+            headers={'authorization': 'Bearer ' + self.auth_token})
+        self.assertEqual(res.status_code, 200)
+
+    def test_delete_users_by_id(self):
+        """ Delete users by ID"""
+        self.test_user_signup()
+        res = self.client.delete(
+            'api/v2/users/1',
+            headers={'authorization': 'Bearer '+self.auth_token})
+        self.assertEqual(res.status_code, 200)
+
+    def test_deletion_non_existent_users(self):
+        """ Delete non-existent users response"""
+        res = self.client.delete(
+            'api/v2/users/2',
+            headers={'authorization': 'Bearer '+self.auth_token})
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            result["Error"],
+            "User with that id not found"
+        )
+
 if __name__ == "__main__":
     unittest.main()
