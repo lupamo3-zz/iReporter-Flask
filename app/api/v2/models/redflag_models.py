@@ -173,4 +173,3 @@ class IncidentsModel():
             """SELECT createdBy FROM Incidents WHERE incidents_id = %s;""", (id,)
         )
         data = currsor.fetchone()
-        print(data)
