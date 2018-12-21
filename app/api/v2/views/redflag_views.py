@@ -5,6 +5,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.api.v2.models.redflag_models import IncidentsModel
 from app.api.v2.models.user_models import UsersModel
 import smtplib
+from app.api.v2.views.africa_talking import SMS
 
 
 UsersModel = UsersModel()
@@ -26,26 +27,33 @@ class MyIncidents(Resource, IncidentsModel):
                 return {"message": "Kindly input user info"}, 400
             elif not data['images'] or not data['comment']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all field.\
+                         i.e {}".format(data)}, 400
             elif not data['createdBy'] or not data['videos']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all field.\
+                         i.e {}".format(data)}, 400
             elif not data['incidentType'] or not data['location']:
                 return {"message":
-                        "Ensure you've filled all field. i.e {}".format(data)}, 400
+                        "Ensure you've filled all field.\
+                         i.e {}".format(data)}, 400
         except:
             return {"KeyError": "Kindly check for missing fields"}, 404
 
         if len(data['comment'].strip()) < 9:
-                return {"error": "comment must be more than 9 characters"}
+            return {"error": "comment must be more than 9 characters"}
         elif len(data['location'].strip()) < 2:
-                return {"error" "location must be more than 2 characters"}
+            return {"error" "location must be more than 2 characters"}
         elif re.search('[a-z]', (data['comment'])) is None:
-            return make_response(jsonify({'error': 'Comment must have at least one alphabet letter in it!'}), 400)
-        elif not re.search(r"([a-zA-Z0-9\s_\\.\-\(\):])+(.jpg|.png|.jpeg|.gif)$", (data['images'])):
-            return make_response(jsonify({'error': 'Invalid image format'}), 400)
-        elif not re.search(r"([a-zA-Z0-9\s_\\.\-\(\):])+(.mp4)$", (data['videos'])):
-            return make_response(jsonify({'error': 'Invalid Video format'}), 400)
+            return {'error':
+                    'Comment must have at least one alphabet letter!'}, 400
+        elif not re.search(
+            r"([a-zA-Z0-9\s_\\.\-\(\):])+(.jpg|.png|.jpeg|.gif)$",
+                (data['images'])):
+            return {'error': 'Invalid image format'}, 400
+        elif not re.search(
+                r"([a-zA-Z0-9\s_\\.\-\(\):])+(.mp4)$", (data['videos'])):
+            return {'error': 'Invalid Video format'}, 400
         elif not data['incidentType'] == "Redflag":
             return {"IncidentType": "Can only be Redflag or Intervention"}
         else:
@@ -59,8 +67,8 @@ class MyIncidents(Resource, IncidentsModel):
 
             incid_data = self.db.save(
                 comment, location, images, videos, createdBy, incidentType
-                )
-            
+            )
+
             return {"incident_created": incid_data,
                     "message": "Created redflag record"}, 201
 
@@ -77,7 +85,7 @@ class MyIncidents(Resource, IncidentsModel):
                 "data": fetch_all
             }), 200)
 
-        return {"error": "No Incident found"}, 404
+        return {"Error": "No Incident found"}, 404
 
 
 class MyRecords(Resource, IncidentsModel):
@@ -94,9 +102,9 @@ class MyRecords(Resource, IncidentsModel):
         incidents = self.db.get_incident_by_id(id)
         if incidents:
 
-                return make_response(jsonify({
-                    "data": incidents
-                }), 200)
+            return make_response(jsonify({
+                "data": incidents
+            }), 200)
 
         return {"error": "Incident with that id not found"}, 404
 
@@ -108,12 +116,14 @@ class MyRecords(Resource, IncidentsModel):
             return {"error": "Incident with that id not found"}, 404
         else:
             current_user = get_jwt_identity()
+            print(current_user)
             created_by = self.db.get_created_by(current_user)
+            print(created_by)
             if created_by == current_user:
                 delete = self.db.delete_redflag(id)
-
-                return {"message": "delete"}, 200
-            return {"message": "You are not allowed to perform this action"}, 403
+                return {"message": "Incident has been deleted"}, 200
+            return {"message":
+                    "You are not allowed to perform this action"}, 403
 
 
 class MySpecificRecords(Resource, IncidentsModel):

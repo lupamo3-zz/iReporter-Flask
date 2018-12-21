@@ -67,6 +67,36 @@ class BaseTestClass(unittest.TestCase):
             "password": "Eatlivecode3@",
             "isAdmin": False
         }
+        self.cell = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "Right",
+            "username": "usertesting",
+            "email": "usertesting@tst.com",
+            "phonenumber": "0717245111",
+            "password": "Eatlivecode3@",
+            "isAdmin": False
+        }
+        self.email = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "Right",
+            "username": "emailtesting",
+            "email": "test@tst.com",
+            "phonenumber": "0717245191",
+            "password": "Eatlivecode3@",
+            "isAdmin": False
+        }
+        self.username = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "Right",
+            "username": "testusr",
+            "email": "usernametesting@tst.com",
+            "phonenumber": "0717245911",
+            "password": "Eatlivecode3@",
+            "isAdmin": False
+        }
         self.login = {
             "username": "testusr",
             "password": "Eatlivecode3@"
@@ -84,6 +114,15 @@ class BaseTestClass(unittest.TestCase):
             "lastname": "Lupamo",
             "othernames": "Right",
             "username": "testusr",
+            "email": "test@tst.com",
+            "phonenumber": "0717245111",
+            "password": "Eatlivecode3@",
+            "isAdmin": False
+        }
+        self.missing_fields = {
+            "firstname": "Anjichi",
+            "lastname": "Lupamo",
+            "othernames": "Right",
             "email": "test@tst.com",
             "phonenumber": "0717245111",
             "password": "Eatlivecode3@",

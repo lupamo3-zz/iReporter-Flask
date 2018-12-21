@@ -96,8 +96,24 @@ class IncidentsModel():
         db_connection = self.db
         currsor = db_connection.cursor()
         currsor.execute(f"SELECT * FROM incidents WHERE incidents_id = {id};")
-        incident = currsor.fetchone()
-        return incident
+        incident = currsor.fetchall()
+        response = []
+
+        for key, records in enumerate(incident):
+            incidents_id, incidentType, status, comment, createdBy, createdOn, location, images, videos = records
+            datar = dict(
+                incidents_id=int(incidents_id),
+                incidentType=incidentType,
+                status=status,
+                comment=comment,
+                createdBy=createdBy,
+                createdOn=createdOn,
+                location=location,
+                images=images,
+                videos=videos
+            )
+            response.append(datar)
+        return response
 
     def update_location(self, location, incidents_id):
         """ Query to update user location details """
@@ -173,4 +189,3 @@ class IncidentsModel():
             """SELECT createdBy FROM Incidents WHERE incidents_id = %s;""", (id,)
         )
         data = currsor.fetchone()
-        print(data)
