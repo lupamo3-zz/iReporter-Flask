@@ -69,7 +69,6 @@ class TestRedflags(BaseTestClass):
             headers={"content-type": "application/json",
                      'authorization': 'Bearer ' + self.auth_token}
         )
-        print(response)
         self.assertEqual(response.status_code, 400)
 
     def test_creation_record_empty_fields(self):
@@ -128,6 +127,41 @@ class TestRedflags(BaseTestClass):
         result = json.loads(response.data.decode())
         self.assertEqual(result["message"], "Updated location successfully")
 
+    def test_editing_comment(self):
+        """ Test if API is able to change comments """
+        response = self.client.post(
+            'api/v2/incidents',
+            data=json.dumps(self.data),
+            headers={"content-type": "application/json",
+                     "Authorization": "Bearer " + self.auth_token}
+        )
+        patch_record = {
+            'comment': 'Once an Andelan forever one'
+        }
+        response = self.client.patch(
+            "api/v2/incidents/1/comment/",
+            data=json.dumps(patch_record),
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token})
+        self.assertEqual(response.status_code, 200)
+
+    def test_editing_status(self):
+        """ Test if API is able to change comments """
+        response = self.client.post(
+            'api/v2/incidents',
+            data=json.dumps(self.data),
+            headers={"content-type": "application/json",
+                     "Authorization": "Bearer " + self.auth_token}
+        )
+        patch_record = {
+            "status": "Draft"
+        }
+        response = self.client.patch(
+            "api/v2/incidents/1/status/",
+            data=json.dumps(patch_record),
+            headers={"content-type": "application/json",
+                     'Authorization': 'Bearer ' + self.auth_token})
+        self.assertEqual(response.status_code, 200)
 
 if __name__ == '__main__':
     unittest.main()

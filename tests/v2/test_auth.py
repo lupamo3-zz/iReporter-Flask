@@ -21,7 +21,7 @@ class TestAuthorization(BaseTestClass):
         """Test post success"""
         response = self.test_user_signup()
         result = json.loads(response.data.decode())
-        self.assertEqual(result["message"], "User testusr created, now login ")
+        self.assertEqual(result["message"], "User testusr created login ")
 
     def test_user_login(self):
         """ Test that registered users can login """
@@ -70,7 +70,65 @@ class TestAuthorization(BaseTestClass):
         )
         result = json.loads(res.data.decode())
         self.assertEqual(res.status_code, 401)
-        
+
+    def test_signup_with_exisiting_phonenumber(self):
+        """ Check is user attempts to signin with a number 
+        that already exists """
+        self.test_user_signup()
+        res = self.client.post(
+            'api/v2/signup',
+            data=json.dumps(self.cell),
+            headers={"content-type": "application/json"}
+        )
+        self.assertEqual(res.status_code, 400)
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            result["message"],
+            "A user with the phonenumber already exists")
+
+    def test_signup_with_exisiting_username(self):
+        """ Check is user attempts to signin with a number 
+        that already exists """
+        self.test_user_signup()
+        res = self.client.post(
+            'api/v2/signup',
+            data=json.dumps(self.username),
+            headers={"content-type": "application/json"}
+        )
+        self.assertEqual(res.status_code, 400)
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            result["message"],
+            "User testusr already exists")
+
+    def test_signup_with_exisiting_email(self):
+        """ Check is user attempts to signin with a number 
+        that already exists """
+        self.test_user_signup()
+        res = self.client.post(
+            'api/v2/signup',
+            data=json.dumps(self.email),
+            headers={"content-type": "application/json"}
+        )
+        self.assertEqual(res.status_code, 400)
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            result["message"],
+            "A user with the email already exists.")
+
+    def test_signup_with_missingfields(self):
+        """ Check if user can signu with missing fields """
+        res = self.client.post(
+            'api/v2/signup',
+            data=json.dumps(self.missing_fields),
+            headers={"content-type": "application/json"}
+        )
+        result = json.loads(res.data.decode())
+        self.assertEqual(
+            result["KeyError"],
+            "Kindly check for missing fields"
+        )
+        self.assertEqual(res.status_code, 404)
 
 if __name__ == "__main__":
     unittest.main()

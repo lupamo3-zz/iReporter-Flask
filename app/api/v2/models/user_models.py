@@ -78,14 +78,29 @@ class UsersModel():
         user_connection = self.db
         print(user_connection)
         currsor = user_connection.cursor()
-        currsor.execute("""SELECT * FROM users WHERE user_id=%s""", (id, ))
+        currsor.execute("""SELECT user_id, firstname, lastname,
+                     othernames, username, email, phonenumber, registered,
+                     isAdmin FROM users WHERE user_id=%s""", (id, ))
 
-        select_user = currsor.fetchone()
+        select_user = currsor.fetchall()
 
-        user_connection.commit()
+        response = []
 
-        if select_user:
-            return select_user
+        for key, userrecords in enumerate(select_user):
+            user_id, firstname, lastname, othernames, username, email, phonenumber, registered, isAdmin = userrecords
+            user_data = dict(
+                user_id=int(user_id),
+                firstname=firstname,
+                lastname=lastname,
+                othernames=othernames,
+                username=username,
+                email=email,
+                phonenumber=phonenumber,
+                registered=registered,
+                isAdmin=isAdmin
+            )
+            response.append(user_data)
+        return response
 
     def delete_user(self, id):
         """ To delete user and user details """
